@@ -56,7 +56,7 @@ const OurMission = () => {
             <div
               key={mission.id}
               data-aos="zoom-in"
-              className="card bg-white shadow-lg hover:shadow-xl transition duration-300 rounded-xl p-6 flex flex-col items-center text-center hover:scale-105"
+              className="card bg-white shadow-lg hover:shadow-xl transition-all duration-300 rounded-xl p-6 flex flex-col items-center text-center hover:scale-105"
             >
               <div className="mb-8">{mission.icon}</div>
               <h3 className="text-2xl font-semibold mb-2">{mission.title}</h3>
