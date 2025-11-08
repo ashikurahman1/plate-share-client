@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import Card from '../Card/Card';
+import Card from '../../Card/Card';
 import { Link } from 'react-router';
 import AOS from 'aos';
 import 'aos/dist/aos.css';

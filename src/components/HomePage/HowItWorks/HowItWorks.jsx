@@ -9,21 +9,21 @@ const HowItWorks = () => {
   const steps = [
     {
       id: 1,
-      icon: <FaUtensils size={100} className="text-primary" />,
+      icon: <FaUtensils className="text-primary size-15 lg:size-20" />,
       title: 'Post Food',
       description:
         'Have extra meals or groceries? Simply post the details — name, description, quantity, and pickup location. Your shared food can make someone’s day!',
     },
     {
       id: 2,
-      icon: <FaSearch size={100} className="text-primary" />,
+      icon: <FaSearch className="text-primary size-15 lg:size-20" />,
       title: 'Find Food',
       description:
         'Browse available food shared by others in your community. Filter by location or food type to find what suits you best — all in a few clicks.',
     },
     {
       id: 3,
-      icon: <FaHandHoldingHeart size={100} className="text-primary" />,
+      icon: <FaHandHoldingHeart className="text-primary size-15 lg:size-20" />,
       title: 'Collect Food',
       description:
         'Once you’ve found what you need, contact the donor and arrange pickup. It’s safe, simple, and helps reduce food waste together.',
@@ -31,10 +31,10 @@ const HowItWorks = () => {
   ];
 
   return (
-    <section className="bg-base-200 dark:bg-gray-900 py-10 md:py-16">
+    <section className="py-10 md:py-20">
       <div
         data-aos="fade-up"
-        data-aos-duration="3000"
+        data-aos-duration="2000"
         className="container mx-auto px-4 text-center"
       >
         {/* Heading */}
@@ -49,7 +49,7 @@ const HowItWorks = () => {
           </p>
         </div>
 
-        <div className="grid gap-8 md:grid-cols-3 sm:grid-cols-2 grid-cols-1">
+        <div className="grid gap-15 md:grid-cols-3 sm:grid-cols-2 grid-cols-1">
           {steps.map(step => (
             <div
               key={step.id}

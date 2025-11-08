@@ -1,7 +1,8 @@
 import React from 'react';
-import Hero from '../components/Hero/Hero';
-import FeaturedFoods from '../components/FeaturedFoods/FeaturedFoods';
-import HowItWorks from '../components/HowItWorks/HowItWorks';
+import Hero from '../components/HomePage/Hero/Hero';
+import FeaturedFoods from '../components/HomePage/FeaturedFoods/FeaturedFoods';
+import HowItWorks from '../components/HomePage/HowItWorks/HowItWorks';
+import OurMission from '../components/HomePage/OurMission/OurMission';
 
 const Home = () => {
   return (
@@ -9,6 +10,7 @@ const Home = () => {
       <Hero />
       <FeaturedFoods />
       <HowItWorks />
+      <OurMission />
     </div>
   );
 };
