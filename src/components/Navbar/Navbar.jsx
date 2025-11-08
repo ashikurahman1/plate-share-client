@@ -9,7 +9,7 @@ const Navbar = () => {
   const [mobileMenu, setMobileMenu] = useState(false);
   return (
     <nav className="bg-base-300 shadow-lg py-3 lg:py-2">
-      <div className="container mx-auto px-4 lg:max-w-10/12 ">
+      <div className="container mx-auto px-4 ">
         <div className="flex justify-between items-center">
           {/* Logo */}
           <Link to={'/'} className="flex items-center">
@@ -39,7 +39,7 @@ const Navbar = () => {
                 </div>
               </div>
               {dropdownOpen && (
-                <ul className="absolute right-0 mt-3 w-48 bg-white shadow-xl rounded-lg p-5 z-50 space-y-5">
+                <ul className="absolute right-0 mt-3 w-60 text-center bg-white shadow-xl rounded-lg p-5 z-50 space-y-5">
                   <li>
                     <Link to={'/add-food'}>Add Food</Link>
                   </li>
@@ -66,7 +66,7 @@ const Navbar = () => {
           </div>
 
           {mobileMenu && (
-            <div className="md:hidden absolute top-0 right-0 w-full h-full bg-white flex flex-col z-30 p-10 pt-20 space-y-6">
+            <div className="md:hidden absolute top-0 right-0 w-full h-full bg-white flex flex-col z-30 p-10 pt-20 space-y-6 text-center">
               <button
                 onClick={() => setMobileMenu(false)}
                 className="btn btn-error absolute top-5 right-5"
@@ -76,14 +76,13 @@ const Navbar = () => {
               <NavLink to="/">Home</NavLink>
               <NavLink to="/available-foods">Available Foods</NavLink>
               <button className="btn bg-primary">Login</button>
-
-              <div className="">
-                <div className="avatar cursor-pointer">
-                  <div className="ring-primary ring-offset-base-100 w-10 rounded-full ring-2 ring-offset-2">
-                    <img src="https://img.daisyui.com/images/profile/demo/spiderperson@192.webp" />
-                  </div>
+              <div className="avatar cursor-pointer absolute top-5">
+                <div className="ring-primary ring-offset-base-100 w-10 rounded-full ring-2 ring-offset-2">
+                  <img src="https://img.daisyui.com/images/profile/demo/spiderperson@192.webp" />
                 </div>
-                <ul className="mt-3 w-48 bg-white shadow-xl rounded-lg p-5 z-50 space-y-5">
+              </div>
+              <div className="">
+                <ul className="space-y-5">
                   <li>
                     <Link to={'/add-food'}>Add Food</Link>
                   </li>
