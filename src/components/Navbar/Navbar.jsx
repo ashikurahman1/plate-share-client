@@ -27,7 +27,9 @@ const Navbar = () => {
           <div className="items-center gap-10 hidden md:flex">
             <NavLink to="/">Home</NavLink>
             <NavLink to="/available-foods">Available Foods</NavLink>
-            <button className="btn btn-primary text-white ml-10">Login</button>
+            <Link to="/auth/login" className="btn btn-primary text-white ml-10">
+              Login
+            </Link>
 
             <div className="relative">
               <div
@@ -75,7 +77,9 @@ const Navbar = () => {
               </button>
               <NavLink to="/">Home</NavLink>
               <NavLink to="/available-foods">Available Foods</NavLink>
-              <button className="btn btn-primary text-white">Login</button>
+              <Link to="/auth/login" className="btn btn-primary text-white">
+                Login
+              </Link>
               <div className="avatar cursor-pointer absolute top-5">
                 <div className="ring-primary ring-offset-base-100 w-10 rounded-full ring-2 ring-offset-2">
                   <img src="https://img.daisyui.com/images/profile/demo/spiderperson@192.webp" />
