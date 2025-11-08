@@ -9,7 +9,7 @@ const Hero = () => {
   }, []);
   return (
     <section className="bg-primary/1">
-      <div className="container mx-auto px-4 py-20 flex flex-col-reverse md:flex-row items-center justify-between">
+      <div className="container mx-auto px-4 lg:px-30 py-20 flex flex-col-reverse md:flex-row items-center justify-between">
         {/* Text Content */}
         <div
           data-aos="fade-right"
@@ -23,17 +23,19 @@ const Hero = () => {
             Plate Share connects communities by reducing food waste. Post your
             surplus food and help those in need.
           </p>
-          <Link to="/foods">
-            <button className="btn btn-primary text-white">
-              View All Foods
-            </button>
-          </Link>
+          <div className="mt-15">
+            <Link to="/foods" className="">
+              <button className="btn btn-primary text-white">
+                View All Foods
+              </button>
+            </Link>
+          </div>
         </div>
 
         {/* Image / Illustration */}
         <div
           data-aos="fade-left"
-          className="md:w-1/2 mb-8 md:mb-0 flex justify-center"
+          className="md:w-1/2 mb-8 md:mb-0 flex justify-end"
         >
           <img
             src={HeroImage}

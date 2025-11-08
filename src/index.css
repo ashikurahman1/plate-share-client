@@ -6,17 +6,3 @@
   --color-primary: #fea51c;
   /* --color-secondary: teal; */
 }
-a {
-  font-weight: 500;
-  transition: all 0.3s ease-in-out;
-}
-a.active {
-  font-weight: 600;
-  color: #fea51c;
-  text-decoration: underline;
-}
-a:hover {
-  font-weight: 600;
-  color: #fea51c;
-  text-decoration: underline;
-}

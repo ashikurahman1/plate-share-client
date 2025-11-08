@@ -8,7 +8,7 @@ import {
 import logo from '../../assets/PlateShare-Logo.png';
 const Footer = () => {
   return (
-    <footer className="bg-gray-800 text-gray-200 py-10">
+    <footer className="bg-gray-800 text-gray-200 py-10 md:pt-15">
       <div className="px-4 grid container mx-auto grid-cols-1 md:grid-cols-4 gap-8">
         {/* Logo & About */}
         <div className="flex flex-col items-start">
@@ -26,8 +26,8 @@ const Footer = () => {
 
         {/* Quick Links */}
         <div className="flex flex-col items-start">
-          <h2 className="font-semibold mb-2">Quick Links</h2>
-          <ul className="space-y-1 text-gray-400">
+          <h2 className="font-semibold mb-6">Quick Links</h2>
+          <ul className="space-y-3 text-gray-400">
             <li>
               <a href="/" className="hover:text-white transition-colors">
                 Home
@@ -56,8 +56,8 @@ const Footer = () => {
 
         {/* Help & Support */}
         <div className="flex flex-col items-start">
-          <h2 className="font-semibold mb-2">Help & Support</h2>
-          <ul className="space-y-1 text-gray-400">
+          <h2 className="font-semibold mb-6">Help & Support</h2>
+          <ul className="space-y-3 text-gray-400">
             <li>
               <a href="/faq" className="hover:text-white transition-colors">
                 FAQ
@@ -83,11 +83,11 @@ const Footer = () => {
 
         {/* Newsletter / Social */}
         <div className="flex flex-col items-start">
-          <h2 className="font-semibold mb-2">Stay Connected</h2>
+          <h2 className="font-semibold mb-6">Stay Connected</h2>
           <p className="text-gray-400 mb-2 text-sm">
             Subscribe for updates & tips.
           </p>
-          <div className="flex mb-4">
+          <div className="flex mb-8">
             <input
               type="email"
               placeholder="Enter your email"

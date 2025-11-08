@@ -8,7 +8,7 @@ const Navbar = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [mobileMenu, setMobileMenu] = useState(false);
   return (
-    <nav className="bg-base-300 shadow-lg py-3 lg:py-2">
+    <nav className="bg-base-200 shadow py-2 lg:py-4">
       <div className="container mx-auto px-4 ">
         <div className="flex justify-between items-center">
           {/* Logo */}
@@ -16,9 +16,9 @@ const Navbar = () => {
             <img
               src={logo}
               alt="PlateShare Logo"
-              className="w-22 hidden md:block"
+              className="w-15 hidden md:block"
             />
-            <h1 className="text-2xl md:text-3xl font-bold ">
+            <h1 className="text-2xl font-bold ">
               Plate<span className="text-primary">Share</span>
             </h1>
           </Link>
@@ -27,7 +27,7 @@ const Navbar = () => {
           <div className="items-center gap-10 hidden md:flex">
             <NavLink to="/">Home</NavLink>
             <NavLink to="/available-foods">Available Foods</NavLink>
-            <button className="btn bg-primary ml-10">Login</button>
+            <button className="btn btn-primary text-white ml-10">Login</button>
 
             <div className="relative">
               <div
@@ -75,7 +75,7 @@ const Navbar = () => {
               </button>
               <NavLink to="/">Home</NavLink>
               <NavLink to="/available-foods">Available Foods</NavLink>
-              <button className="btn bg-primary">Login</button>
+              <button className="btn btn-primary text-white">Login</button>
               <div className="avatar cursor-pointer absolute top-5">
                 <div className="ring-primary ring-offset-base-100 w-10 rounded-full ring-2 ring-offset-2">
                   <img src="https://img.daisyui.com/images/profile/demo/spiderperson@192.webp" />
@@ -101,11 +101,6 @@ const Navbar = () => {
           )}
         </div>
       </div>
-      {/* 
-      Website Logo &amp; Name
-■ Home
-■ Available Foods
-■ Login (Button) */}
     </nav>
   );
 };
