@@ -1,4 +1,4 @@
-# 🥗 PlateShare — Community Food Sharing Platform
+# PlateShare — Community Food Sharing Platform
 
 **Live Site:** [](#)  
 **Client Repo:** [](#)  
@@ -6,7 +6,7 @@
 
 ---
 
-## 📖 About the Project
+## About the Project
 
 **PlateShare** is a **community-driven food sharing platform** designed to
 reduce food waste and help those in need.  
@@ -17,7 +17,7 @@ operations, and a modern, responsive UI with smooth animations.
 
 ---
 
-## 🚀 Key Features
+## Key Features
 
 - **Food Donation System:** Logged-in users can add, manage, update, and delete
   their food donations.
@@ -34,9 +34,9 @@ operations, and a modern, responsive UI with smooth animations.
 
 ---
 
-## 🧩 Core Functionalities
+## Core Functionalities
 
-### 🏠 Home Page
+### Home Page
 
 - Hero section with a clear call-to-action (“View All Foods”).
 - Dynamic **Featured Foods** section showing top 6 foods with the highest
@@ -45,14 +45,14 @@ operations, and a modern, responsive UI with smooth animations.
   engagement.
 - Smooth entry animations using **Framer Motion / AOS**.
 
-### 🔐 Authentication (Firebase)
+### Authentication (Firebase)
 
 - User registration with name, photo URL, email, and strong password validation.
 - Google Sign-In integration.
 - Real-time success/error toasts for all auth actions.
 - Redirects users to the intended route after login.
 
-### 🍱 Food Management (CRUD)
+### Food Management (CRUD)
 
 - **Add Food (Private):** Add new food info with image (via imgbb), quantity,
   expiry date, and pickup location.
@@ -61,14 +61,14 @@ operations, and a modern, responsive UI with smooth animations.
 - **Manage My Foods (Private):** Update or delete foods with confirmation
   prompts.
 
-### 📦 Food Request System
+### Food Request System
 
 - Users can submit a request with location, reason, and contact info.
 - Donors can **accept** or **reject** requests directly from the food details
   page.
 - Auto-updates request and food status (e.g., to “Donated” when accepted).
 
-### 💫 Additional Features
+### Additional Features
 
 - Protected routes using Firebase JWT or middleware.
 - **TanStack Query** for caching and state management.
@@ -78,7 +78,7 @@ operations, and a modern, responsive UI with smooth animations.
 
 ---
 
-## 🧠 Technologies Used
+## Technologies Used
 
 | Category           | Tools & Libraries                                                                       |
 | ------------------ | --------------------------------------------------------------------------------------- |
