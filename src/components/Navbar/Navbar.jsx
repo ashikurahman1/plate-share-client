@@ -1,12 +1,28 @@
-import React, { useState } from 'react';
+import React, { use, useState } from 'react';
 import logo from '../../assets/PlateShare-Logo.png';
-import { Link, NavLink } from 'react-router';
+import { Link, NavLink, useNavigate } from 'react-router';
 import { TiThMenu } from 'react-icons/ti';
 import { IoClose } from 'react-icons/io5';
+import { AuthContext } from '../../context/AuthContext';
+import toast from 'react-hot-toast';
 
 const Navbar = () => {
+  const { user, loading, userLogout } = use(AuthContext);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [mobileMenu, setMobileMenu] = useState(false);
+  const navigate = useNavigate();
+  // if (loading) return <span>Loading...</span>;
+
+  const handleLogout = async () => {
+    try {
+      const result = await userLogout();
+      toast.success('Logout success');
+      navigate('/');
+    } catch (error) {
+      toast.error('Registration failed');
+      console.error(error);
+    }
+  };
   return (
     <nav className="bg-base-200 shadow py-2 lg:py-4">
       <div className="container mx-auto px-4 ">
@@ -27,36 +43,55 @@ const Navbar = () => {
           <div className="items-center gap-10 hidden md:flex">
             <NavLink to="/">Home</NavLink>
             <NavLink to="/available-foods">Available Foods</NavLink>
-            <Link to="/auth/login" className="btn btn-primary text-white ml-10">
-              Login
-            </Link>
 
-            <div className="relative">
-              <div
-                onClick={() => setDropdownOpen(!dropdownOpen)}
-                className="avatar cursor-pointer"
-              >
-                <div className="ring-primary ring-offset-base-100 w-10 rounded-full ring-2 ring-offset-2">
-                  <img src="https://img.daisyui.com/images/profile/demo/spiderperson@192.webp" />
+            {user ? (
+              <div className="relative">
+                <div
+                  onClick={() => setDropdownOpen(!dropdownOpen)}
+                  className="avatar cursor-pointer"
+                >
+                  <div className="ring-primary ring-offset-base-100 w-10 rounded-full ring-2 ring-offset-2">
+                    <img
+                      src={
+                        user?.photoURL
+                          ? user?.photoURL
+                          : 'https://img.daisyui.com/images/profile/demo/spiderperson@192.webp'
+                      }
+                    />
+                  </div>
                 </div>
+                {dropdownOpen && (
+                  <ul className="absolute right-0 mt-3 w-60 text-center bg-white shadow-xl rounded-lg p-5 z-50 space-y-5">
+                    <li>{user?.displayName}</li>
+                    <div className="divider"></div>
+                    <li>
+                      <Link to={'/add-food'}>Add Food</Link>
+                    </li>
+                    <li>
+                      <Link to={'/manage-foods'}>Manage My Foods</Link>
+                    </li>
+                    <li>
+                      <Link to={'/my-food-requests'}>My Food Requests</Link>
+                    </li>
+                    <li className="mt-8">
+                      <button
+                        onClick={handleLogout}
+                        className="btn btn-neutral w-full"
+                      >
+                        Logout
+                      </button>
+                    </li>
+                  </ul>
+                )}
               </div>
-              {dropdownOpen && (
-                <ul className="absolute right-0 mt-3 w-60 text-center bg-white shadow-xl rounded-lg p-5 z-50 space-y-5">
-                  <li>
-                    <Link to={'/add-food'}>Add Food</Link>
-                  </li>
-                  <li>
-                    <Link to={'/manage-foods'}>Manage My Foods</Link>
-                  </li>
-                  <li>
-                    <Link to={'/my-food-requests'}>My Food Requests</Link>
-                  </li>
-                  <li className="mt-8">
-                    <button className="btn btn-neutral w-full">Logout</button>
-                  </li>
-                </ul>
-              )}
-            </div>
+            ) : (
+              <Link
+                to="/auth/login"
+                className="btn btn-primary text-white ml-10"
+              >
+                Login
+              </Link>
+            )}
           </div>
 
           {/* Mobile Menu */}
@@ -77,14 +112,19 @@ const Navbar = () => {
               </button>
               <NavLink to="/">Home</NavLink>
               <NavLink to="/available-foods">Available Foods</NavLink>
-              <Link to="/auth/login" className="btn btn-primary text-white">
-                Login
-              </Link>
-              <div className="avatar cursor-pointer absolute top-5">
-                <div className="ring-primary ring-offset-base-100 w-10 rounded-full ring-2 ring-offset-2">
-                  <img src="https://img.daisyui.com/images/profile/demo/spiderperson@192.webp" />
+
+              {user ? (
+                <div className="avatar cursor-pointer absolute top-5">
+                  <div className="ring-primary ring-offset-base-100 w-10 rounded-full ring-2 ring-offset-2">
+                    <img src="https://img.daisyui.com/images/profile/demo/spiderperson@192.webp" />
+                  </div>
                 </div>
-              </div>
+              ) : (
+                <Link to="/auth/login" className="btn btn-primary text-white">
+                  Login
+                </Link>
+              )}
+
               <div className="">
                 <ul className="space-y-5">
                   <li>
@@ -97,7 +137,12 @@ const Navbar = () => {
                     <Link to={'/my-food-requests'}>My Food Requests</Link>
                   </li>
                   <li className="mt-8">
-                    <button className="btn btn-neutral w-full">Logout</button>
+                    <button
+                      onClick={handleLogout}
+                      className="btn btn-neutral w-full"
+                    >
+                      Logout
+                    </button>
                   </li>
                 </ul>
               </div>
