@@ -1,15 +1,15 @@
-import React, { use, useState } from 'react';
+import React, { useState } from 'react';
 import { BiSolidHide, BiSolidShow } from 'react-icons/bi';
 import { FcGoogle } from 'react-icons/fc';
 import { TbArrowBackUp } from 'react-icons/tb';
 import { Link, useNavigate } from 'react-router';
-import { AuthContext } from '../../../context/AuthContext';
 import Swal from 'sweetalert2';
 import toast from 'react-hot-toast';
+import useAuth from '../../../hooks/useAuth';
 
 const Login = () => {
   const [show, setShow] = useState(false);
-  const { loginWithEmail, loginWithGoogle } = use(AuthContext);
+  const { loginWithEmail, loginWithGoogle } = useAuth();
   const navigate = useNavigate();
 
   const handleLoginWihEmail = e => {

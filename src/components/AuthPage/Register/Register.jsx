@@ -1,15 +1,16 @@
-import React, { use, useState } from 'react';
+import React, { useState } from 'react';
 import { FcGoogle } from 'react-icons/fc';
 import { TbArrowBackUp } from 'react-icons/tb';
 import { Link, useNavigate } from 'react-router';
 import { BiSolidHide, BiSolidShow } from 'react-icons/bi';
-import { AuthContext } from '../../../context/AuthContext';
+
 import { updateProfile } from 'firebase/auth';
 import Swal from 'sweetalert2';
 import toast from 'react-hot-toast';
+import useAuth from '../../../hooks/useAuth';
 const Register = () => {
   const [show, setShow] = useState(false);
-  const { user, setUser, createUser, loginWithGoogle } = use(AuthContext);
+  const { user, setUser, createUser, loginWithGoogle } = useAuth();
   const navigate = useNavigate();
 
   const handleRegister = async e => {

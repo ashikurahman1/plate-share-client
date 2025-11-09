@@ -1,13 +1,13 @@
-import React, { use, useState } from 'react';
+import React, { useState } from 'react';
 import logo from '../../assets/PlateShare-Logo.png';
 import { Link, NavLink, useNavigate } from 'react-router';
 import { TiThMenu } from 'react-icons/ti';
 import { IoClose } from 'react-icons/io5';
-import { AuthContext } from '../../context/AuthContext';
 import toast from 'react-hot-toast';
+import useAuth from '../../hooks/useAuth';
 
 const Navbar = () => {
-  const { user, loading, userLogout } = use(AuthContext);
+  const { user, loading, userLogout } = useAuth();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [mobileMenu, setMobileMenu] = useState(false);
   const navigate = useNavigate();
@@ -16,6 +16,7 @@ const Navbar = () => {
   const handleLogout = async () => {
     try {
       const result = await userLogout();
+      setDropdownOpen(false);
       toast.success('Logout success');
       navigate('/');
     } catch (error) {
@@ -64,7 +65,7 @@ const Navbar = () => {
                   <ul className="absolute right-0 mt-3 w-60 text-center bg-white shadow-xl rounded-lg p-5 z-50 space-y-5">
                     <li>{user?.displayName}</li>
                     <div className="divider"></div>
-                    <li>
+                    <li onClick={() => setDropdownOpen(false)}>
                       <Link to={'/add-food'}>Add Food</Link>
                     </li>
                     <li>
