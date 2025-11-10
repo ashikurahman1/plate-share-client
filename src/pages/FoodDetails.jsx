@@ -66,13 +66,13 @@ const FoodDetails = () => {
     <section className="py-15 container mx-auto px-4">
       <div className="flex flex-col lg:flex-row gap-10 p-5">
         {/* Left */}
-        <div className="w-full lg:w-1/2 overflow-hidden shadow p-5">
+        <div className="w-full lg:w-1/2 overflow-hidden shadow-md rounded-md p-5">
           <img
             src={food_image}
             alt={food_name}
-            className="w-full max-h-100 object-cover rounded-md"
+            className="w-full min-h-80 object-cover rounded-md"
           />
-          <div className="shadow p-5 mt-10 flex items-center gap-5">
+          <div className="shadow-md rounded-md p-5 mt-10 flex items-center gap-5">
             <img
               src={donor_image}
               alt={donor_name}
@@ -106,7 +106,7 @@ const FoodDetails = () => {
 
           <button
             onClick={handleOpenModal}
-            className="btn btn-primary text-white  w-full text-lg"
+            className="btn btn-primary text-white  w-full text-lg mt-8"
           >
             Request Food
           </button>

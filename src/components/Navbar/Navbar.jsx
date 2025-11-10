@@ -5,7 +5,6 @@ import { TiThMenu } from 'react-icons/ti';
 import { IoClose } from 'react-icons/io5';
 import toast from 'react-hot-toast';
 import useAuth from '../../hooks/useAuth';
-import Loader from '../Loader/Loader';
 
 const Navbar = () => {
   const { user, loading, userLogout } = useAuth();
@@ -118,7 +117,13 @@ const Navbar = () => {
               {user ? (
                 <div className="avatar cursor-pointer absolute top-5">
                   <div className="ring-primary ring-offset-base-100 w-10 rounded-full ring-2 ring-offset-2">
-                    <img src="https://img.daisyui.com/images/profile/demo/spiderperson@192.webp" />
+                    <img
+                      src={
+                        user?.photoURL
+                          ? user?.photoURL
+                          : 'https://img.daisyui.com/images/profile/demo/spiderperson@192.webp'
+                      }
+                    />
                   </div>
                 </div>
               ) : (
