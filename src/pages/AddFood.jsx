@@ -70,11 +70,14 @@ const AddFood = () => {
     };
 
     try {
-      const res = await fetch('http://localhost:5100/foods', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newFood),
-      });
+      const res = await fetch(
+        'https://plate-share-server-eight.vercel.app/foods',
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(newFood),
+        }
+      );
 
       const result = await res.json();
 

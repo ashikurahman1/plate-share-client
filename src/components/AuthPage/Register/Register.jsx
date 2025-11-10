@@ -37,11 +37,14 @@ const Register = () => {
         photoURL: user?.photoURL,
         name: user?.displayName,
       };
-      const res = await fetch('http://localhost:5100/users', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newUser),
-      });
+      const res = await fetch(
+        'https://plate-share-server-eight.vercel.app/users',
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(newUser),
+        }
+      );
       const data = await res.json();
       if (data.acknowledged && data.insertedId) {
         Swal.fire({
