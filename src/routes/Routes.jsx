@@ -7,11 +7,14 @@ import Register from '../components/AuthPage/Register/Register';
 import Login from '../components/AuthPage/Login/Login';
 import PrivateRoutes from './PrivateRoutes';
 import AddFood from '../pages/AddFood';
+import FoodDetails from '../pages/FoodDetails';
+import Error404 from '../pages/Error404';
 
 export const router = createBrowserRouter([
   {
     path: '/',
     Component: RootLayout,
+    errorElement: <Error404 />,
     children: [
       { index: true, Component: Home },
       {
@@ -27,6 +30,14 @@ export const router = createBrowserRouter([
         element: (
           <PrivateRoutes>
             <AddFood />
+          </PrivateRoutes>
+        ),
+      },
+      {
+        path: '/food/:id',
+        element: (
+          <PrivateRoutes>
+            <FoodDetails />
           </PrivateRoutes>
         ),
       },

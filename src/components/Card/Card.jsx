@@ -1,6 +1,8 @@
 import React from 'react';
+import { Link } from 'react-router';
 
 const Card = () => {
+  const id = '1';
   return (
     <div className="card bg-base-100 max-w-110 shadow-lg hover:shadow-xl hover:-translate-y-1.5 transition duration-200">
       <figure>
@@ -16,9 +18,12 @@ const Card = () => {
           title and actions parts
         </p>
         <div className="card-actions justify-end">
-          <button className="btn btn-primary text-white w-full mt-5">
+          <Link
+            to={`/food/${id}`}
+            className="btn btn-primary text-white w-full mt-5"
+          >
             View Details
-          </button>
+          </Link>
         </div>
       </div>
     </div>

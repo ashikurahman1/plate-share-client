@@ -5,25 +5,26 @@ import { TiThMenu } from 'react-icons/ti';
 import { IoClose } from 'react-icons/io5';
 import toast from 'react-hot-toast';
 import useAuth from '../../hooks/useAuth';
+import Loader from '../Loader/Loader';
 
 const Navbar = () => {
   const { user, loading, userLogout } = useAuth();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [mobileMenu, setMobileMenu] = useState(false);
   const navigate = useNavigate();
-  // if (loading) return <span>Loading...</span>;
 
   const handleLogout = async () => {
     try {
-      const result = await userLogout();
+      await userLogout();
       setDropdownOpen(false);
       toast.success('Logout success');
       navigate('/');
     } catch (error) {
-      toast.error('Registration failed');
       console.error(error);
     }
   };
+
+  if (loading) return <Loader />;
   return (
     <nav className="bg-base-200 shadow py-2 lg:py-4">
       <div className="container mx-auto px-4 ">
