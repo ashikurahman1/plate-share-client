@@ -11,7 +11,6 @@ const Card = ({ food }) => {
     food_name,
     food_quantity,
     food_status,
-    _id,
   } = food;
   return (
     <div className="card bg-base-100 max-w-110 shadow-lg hover:shadow-xl hover:-translate-y-1.5 transition duration-200">
@@ -19,7 +18,7 @@ const Card = ({ food }) => {
         <img
           src={food_img_thumb}
           alt={food_name}
-          className="object-cover"
+          className="object-cover w-full"
           loading="lazy"
         />
       </div>
@@ -43,7 +42,7 @@ const Card = ({ food }) => {
         </div>
         <div className="card-actions justify-end">
           <Link
-            to={`/foods/${_id}`}
+            to={`/foods/${food?._id}`}
             className="btn btn-primary text-white w-full mt-3"
           >
             View Details

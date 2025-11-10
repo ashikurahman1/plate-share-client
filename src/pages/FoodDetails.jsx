@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import toast from 'react-hot-toast';
 import { useLoaderData } from 'react-router';
 import useAuth from '../hooks/useAuth';
@@ -6,6 +6,21 @@ import useAuth from '../hooks/useAuth';
 const FoodDetails = () => {
   const food = useLoaderData();
   console.log(food);
+
+  const {
+    _id,
+    food_name,
+    food_image,
+    food_quantity,
+    location,
+    expired_date,
+    additinal_note,
+    donor_email,
+    donor_name,
+    donor_image,
+    food_status,
+  } = food;
+
   const { user } = useAuth();
   const my_modal = useRef(null);
   // Open Modal
@@ -33,7 +48,7 @@ const FoodDetails = () => {
       user_name: user?.displayName,
       user_photoURL: user?.photoURL,
       status: 'Pending',
-      _id: id,
+      // _id: id,
     };
 
     try {
@@ -48,31 +63,45 @@ const FoodDetails = () => {
   };
 
   return (
-    <section className="py-10 container mx-auto px-4">
-      <div className="flex flex-col lg:flex-row gap-10 border p-5">
+    <section className="py-15 container mx-auto px-4">
+      <div className="flex flex-col lg:flex-row gap-10 p-5">
         {/* Left */}
-        <div className="border">
-          <img src="hfssj" alt="Food Image" />
+        <div className="w-full lg:w-1/2 overflow-hidden shadow p-5">
+          <img
+            src={food_image}
+            alt={food_name}
+            className="w-full max-h-100 object-cover rounded-md"
+          />
+          <div className="shadow p-5 mt-10 flex items-center gap-5">
+            <img
+              src={donor_image}
+              alt={donor_name}
+              className="max-w-20 rounded-md h-20 object-cover"
+            />
+            <div className="">
+              <h2 className="text-xl font-semibold">{donor_name}</h2>
+              <p>{donor_email} </p>
+            </div>
+          </div>
         </div>
         <div className="space-y-3">
-          <h2 className="text-3xl md:text-5xl font-semibold">Food name</h2>
-          <p className="badge badge-error">Status</p>
+          <h2 className="text-3xl md:text-5xl font-semibold">{food_name}</h2>
+          <p className="badge badge-error my-3">{food_status} </p>
 
-          <div className="shadow-lg p-5 border">
-            <p className="text-xl font-semibold mb-3">Served {2} People</p>
-            <p className="text-xl font-semibold">Expired Dates</p>
+          <div className="shadow-lg p-5 ">
+            <p className="font-semibold mt-2 text-xl">
+              Serves {food_quantity} {food_quantity < 1 ? 'People' : "People's"}{' '}
+            </p>
+            <p className="text-xl font-semibold">{expired_date}</p>
           </div>
-          <div className="shadow-lg p-5 border">
+          <div className="shadow-lg p-5 ">
             <p>
-              <span className="font-semibold">Pickup Location: </span> Lorem
-              ipsum, dolor sit amet consectetur adipisicing elit. Dolores, nisi
-              aperiam saepe vero perferendis incidunt rerum laboriosam magni,
-              accusamus sunt id earum provident alias fugit enim aliquid.
-              Aperiam, minima deleniti.
+              <span className="font-semibold">Pickup Location: </span>{' '}
+              {location}
             </p>
           </div>
-          <div className="shadow-lg p-5 border">
-            <p>Additional Note: </p>
+          <div className="shadow-lg p-5 ">
+            <p>Additional Note: {additinal_note} </p>
           </div>
 
           <button

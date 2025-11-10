@@ -15,6 +15,7 @@ const AddFood = () => {
       toast.error('Please upload an image');
       return;
     }
+
     const formData = new FormData();
     formData.append('image', image);
 
@@ -22,28 +23,25 @@ const AddFood = () => {
       setLoading(true);
       const res = await fetch(
         `https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_IMGBB_API}`,
-        {
-          method: 'POST',
-          body: formData,
-        }
+        { method: 'POST', body: formData }
       );
 
-      if (!res.ok) {
-        throw new Error(`Image upload failed: ${res.status} ${res.statusText}`);
-      }
+      if (!res.ok) throw new Error(`Image upload failed`);
 
       const data = await res.json();
 
       if (data.success) {
-        setPreview(data.data?.thumb?.url);
         setUrl(data.data.url);
+        setPreview(
+          data.data.thumb?.url || data.data.display_url || data.data.url
+        ); //
         toast.success('Image uploaded successfully!');
       } else {
-        toast.error('Upload failed');
+        toast.error('Image upload failed');
       }
     } catch (err) {
-      console.error('Upload error:', err);
-      toast.error('Upload failed');
+      console.error(err);
+      toast.error('Image upload failed');
     } finally {
       setLoading(false);
     }
@@ -51,7 +49,10 @@ const AddFood = () => {
 
   const handleAddFood = async e => {
     e.preventDefault();
-    if (!image) return toast.error('Please upload the food image');
+    if (!url) {
+      toast.error('Please upload the image first');
+      return;
+    }
 
     const form = e.target;
     const newFood = {
@@ -201,7 +202,11 @@ const AddFood = () => {
             </div>
           </div>
 
-          <button className="btn btn-primary text-white w-full mt-5">
+          <button
+            type="submit"
+            disabled={!url || loading}
+            className="btn btn-primary text-white w-full mt-5"
+          >
             Add Food
           </button>
         </form>
