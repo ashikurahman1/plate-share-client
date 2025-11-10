@@ -10,14 +10,13 @@ import toast from 'react-hot-toast';
 import useAuth from '../../../hooks/useAuth';
 const Register = () => {
   const [show, setShow] = useState(false);
-  const { user, setUser, createUser, loginWithGoogle } = useAuth();
+  const { setUser, createUser, loginWithGoogle } = useAuth();
   const navigate = useNavigate();
 
   const handleRegister = async e => {
     e.preventDefault();
 
     const form = e.target;
-
     const displayName = form.name.value;
     const email = form.email.value;
     const photoURL = form.photoURL.value;
@@ -33,13 +32,27 @@ const Register = () => {
       });
 
       setUser({ ...user, displayName, photoURL });
-
-      Swal.fire({
-        title: 'Registration Success',
-        icon: 'success',
-        draggable: true,
+      const newUser = {
+        email: user?.email,
+        photoURL: user?.photoURL,
+        name: user?.displayName,
+      };
+      const res = await fetch('http://localhost:5100/users', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newUser),
       });
-      navigate('/');
+      const data = await res.json();
+      if (data.acknowledged && data.insertedId) {
+        Swal.fire({
+          title: 'Registration Success',
+          icon: 'success',
+          draggable: true,
+        });
+        navigate('/');
+      } else {
+        toast.error('user cant added on database');
+      }
     } catch (error) {
       toast.error('Registration failed');
       console.error(error);

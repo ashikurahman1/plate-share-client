@@ -9,20 +9,34 @@ import PrivateRoutes from './PrivateRoutes';
 import AddFood from '../pages/AddFood';
 import FoodDetails from '../pages/FoodDetails';
 import Error404 from '../pages/Error404';
+import Loader from '../components/Loader/Loader';
 
 export const router = createBrowserRouter([
   {
     path: '/',
     Component: RootLayout,
+
     errorElement: <Error404 />,
     children: [
-      { index: true, Component: Home },
+      {
+        index: true,
+        Component: Home,
+        loader: async () =>
+          await fetch('http://localhost:5100/featured-foods').then(res =>
+            res.json()
+          ),
+      },
       {
         path: '/',
         Component: Home,
       },
       {
         path: '/available-foods',
+        loader: async () => {
+          const res = await fetch('http://localhost:5100/foods');
+          if (!res.ok) throw new Error('Failed to fetch foods');
+          return res.json();
+        },
         Component: AvailableFoods,
       },
       {
@@ -35,6 +49,11 @@ export const router = createBrowserRouter([
       },
       {
         path: '/food/:id',
+        loader: async ({ params }) => {
+          const res = await fetch(`http://localhost:5100/foods/${params.id}`);
+          if (!res.ok) throw new Error('Failed to fetch foods');
+          return res.json();
+        },
         element: (
           <PrivateRoutes>
             <FoodDetails />
@@ -56,5 +75,8 @@ export const router = createBrowserRouter([
         Component: Login,
       },
     ],
+  },
+  {
+    HydrateFallback: <Loader />,
   },
 ]);

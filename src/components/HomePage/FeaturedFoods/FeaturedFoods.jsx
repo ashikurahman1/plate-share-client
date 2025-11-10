@@ -3,7 +3,9 @@ import Card from '../../Card/Card';
 import { Link } from 'react-router';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
-const FeaturedFoods = () => {
+const FeaturedFoods = ({ featuredFoods }) => {
+  console.log(featuredFoods);
+
   useEffect(() => {
     AOS.init({ duration: 1000, easing: 'ease-in-out', once: true });
   }, []);
@@ -22,12 +24,9 @@ const FeaturedFoods = () => {
 
         {/* Foods */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 md:gap-20 mb-10">
-          <Card />
-          <Card />
-          <Card />
-          <Card />
-          <Card />
-          <Card />
+          {featuredFoods.map(food => (
+            <Card key={food._id} food={food} />
+          ))}
         </div>
         {/* Button */}
         <div className="flex justify-center">

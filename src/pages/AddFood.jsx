@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import useAuth from '../hooks/useAuth';
 import toast from 'react-hot-toast';
+import { useNavigate } from 'react-router';
 
 const AddFood = () => {
   const { user } = useAuth();
@@ -8,7 +9,7 @@ const AddFood = () => {
   const [preview, setPreview] = useState('');
   const [url, setUrl] = useState('');
   const [loading, setLoading] = useState(false);
-
+  const navigate = useNavigate();
   const handleImageUpload = async () => {
     if (!image) {
       toast.error('Please upload an image');
@@ -27,6 +28,10 @@ const AddFood = () => {
         }
       );
 
+      if (!res.ok) {
+        throw new Error(`Image upload failed: ${res.status} ${res.statusText}`);
+      }
+
       const data = await res.json();
 
       if (data.success) {
@@ -37,39 +42,51 @@ const AddFood = () => {
         toast.error('Upload failed');
       }
     } catch (err) {
+      console.error('Upload error:', err);
       toast.error('Upload failed');
-      console.error(err);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleAddFood = e => {
+  const handleAddFood = async e => {
     e.preventDefault();
-
-    console.log();
-
-    if (!image) {
-      toast.error('Please upload the food Image');
-      return;
-    }
+    if (!image) return toast.error('Please upload the food image');
 
     const form = e.target;
-
     const newFood = {
       food_name: form.food_name.value,
       food_image: url,
+      food_img_thumb: preview,
       food_quantity: form.food_quantity.value,
       location: form.location.value,
       expired_date: form.expireDate.value,
-      additinal_note: form.addionalNotes.value,
-      food_addedBy: user?.email,
-      owner_name: user?.displayName,
-      owner_image: user?.photoURL,
+      additional_note: form.additionalNote.value,
+      donor_email: user?.email,
+      donor_name: user?.displayName,
+      donor_image: user?.photoURL,
       food_status: 'Available',
     };
 
-    console.log(newFood);
+    try {
+      const res = await fetch('http://localhost:5100/foods', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newFood),
+      });
+
+      const result = await res.json();
+
+      if (result.acknowledged && result.insertedId) {
+        toast.success('Food added successfully');
+        navigate('/');
+      } else {
+        toast.error('Failed to add food');
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error('Something went wrong');
+    }
   };
 
   return (
@@ -93,7 +110,6 @@ const AddFood = () => {
             <div className="flex flex-col space-y-3">
               <label className="block">Upload Food Image :</label>
               <input
-                required
                 type="file"
                 className=" file-input file-input-sm md:file-input-md file-input-warning"
                 placeholder="Food Name"
@@ -152,7 +168,7 @@ const AddFood = () => {
           <div>
             <label className="">Additional Notes :</label>
             <textarea
-              name="addionalNotes"
+              name="additionalNote"
               rows={5}
               placeholder="Additional notes"
               className="textarea w-full mt-2"
@@ -160,7 +176,7 @@ const AddFood = () => {
           </div>
           <div className="bg-gray-200 p-3">
             <h3 className="text-lg font-semibold mb-3">Donator's Info</h3>
-            <div className="flex justify-between gap-3">
+            <div className="flex justify-between items-center gap-3">
               <div className="flex-1">
                 <input
                   disabled
@@ -175,11 +191,11 @@ const AddFood = () => {
                   className="input w-full mb-3"
                 />
               </div>
-              <div>
+              <div className="max-w-30 h-full overflow-hidden">
                 <img
                   src={user?.photoURL}
                   alt={user?.displayName}
-                  className="rounded-md"
+                  className="rounded-md "
                 />
               </div>
             </div>

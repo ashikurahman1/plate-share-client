@@ -1,8 +1,12 @@
 import React, { useRef, useState } from 'react';
 import toast from 'react-hot-toast';
+import { useLoaderData } from 'react-router';
+import useAuth from '../hooks/useAuth';
 
 const FoodDetails = () => {
-  const { user } = useState(null);
+  const food = useLoaderData();
+  console.log(food);
+  const { user } = useAuth();
   const my_modal = useRef(null);
   // Open Modal
   const handleOpenModal = () => {

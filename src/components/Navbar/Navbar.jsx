@@ -24,7 +24,7 @@ const Navbar = () => {
     }
   };
 
-  if (loading) return <Loader />;
+  if (loading) return <span className="">..</span>;
   return (
     <nav className="bg-base-200 shadow py-2 lg:py-4">
       <div className="container mx-auto px-4 ">
