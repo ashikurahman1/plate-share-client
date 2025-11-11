@@ -10,6 +10,7 @@ import AddFood from '../pages/AddFood';
 import FoodDetails from '../pages/FoodDetails';
 import Error404 from '../pages/Error404';
 import Loader from '../components/Loader/Loader';
+import ManageFoods from '../components/ManageFoods/ManageFoods';
 
 export const router = createBrowserRouter([
   {
@@ -33,7 +34,7 @@ export const router = createBrowserRouter([
       {
         path: '/available-foods',
         loader: async () => {
-          const res = await fetch('http://localhost:5100/api/foods');
+          const res = await fetch('http://localhost:5100/api/foods/availables');
           if (!res.ok) throw new Error('Failed to fetch foods');
           return res.json();
         },
@@ -44,6 +45,14 @@ export const router = createBrowserRouter([
         element: (
           <PrivateRoutes>
             <AddFood />
+          </PrivateRoutes>
+        ),
+      },
+      {
+        path: '/manage-foods',
+        element: (
+          <PrivateRoutes>
+            <ManageFoods />
           </PrivateRoutes>
         ),
       },

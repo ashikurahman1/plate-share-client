@@ -68,10 +68,10 @@ const Navbar = () => {
                     <li onClick={() => setDropdownOpen(false)}>
                       <Link to={'/add-food'}>Add Food</Link>
                     </li>
-                    <li>
+                    <li onClick={() => setDropdownOpen(false)}>
                       <Link to={'/manage-foods'}>Manage My Foods</Link>
                     </li>
-                    <li>
+                    <li onClick={() => setDropdownOpen(false)}>
                       <Link to={'/my-food-requests'}>My Food Requests</Link>
                     </li>
                     <li className="mt-8">
