@@ -22,9 +22,9 @@ export const router = createBrowserRouter([
         index: true,
         Component: Home,
         loader: async () =>
-          await fetch(
-            'https://plate-share-server-eight.vercel.app/featured-foods'
-          ).then(res => res.json()),
+          await fetch('http://localhost:5100/api/featured-foods').then(res =>
+            res.json()
+          ),
       },
       {
         path: '/',
@@ -33,9 +33,7 @@ export const router = createBrowserRouter([
       {
         path: '/available-foods',
         loader: async () => {
-          const res = await fetch(
-            'https://plate-share-server-eight.vercel.app/foods'
-          );
+          const res = await fetch('http://localhost:5100/api/foods');
           if (!res.ok) throw new Error('Failed to fetch foods');
           return res.json();
         },
@@ -53,7 +51,7 @@ export const router = createBrowserRouter([
         path: '/foods/:id',
         loader: async ({ params }) => {
           const res = await fetch(
-            `https://plate-share-server-eight.vercel.app/foods/${params.id}`
+            `http://localhost:5100/api/foods/${params.id}`
           );
           if (!res.ok) throw new Error('Failed to fetch foods');
           return res.json();

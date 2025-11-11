@@ -4,12 +4,12 @@ import './index.css';
 import { router } from './routes/Routes';
 import { RouterProvider } from 'react-router/dom';
 import AuthProvider from './context/AuthContext';
-import { Toaster } from 'react-hot-toast';
+import Loader from './components/Loader/Loader';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <AuthProvider>
-      <RouterProvider router={router} />
+      <RouterProvider router={router} fallbackElement={<Loader />} />
     </AuthProvider>
   </StrictMode>
 );

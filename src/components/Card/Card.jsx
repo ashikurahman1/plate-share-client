@@ -3,6 +3,7 @@ import { Link } from 'react-router';
 
 const Card = ({ food }) => {
   const {
+    location,
     donor_email,
     donor_image,
     donor_name,
@@ -31,6 +32,7 @@ const Card = ({ food }) => {
         <p className="font-semibold text-center mt-2">
           Serves {food_quantity} {food_quantity < 1 ? 'People' : "People's"}{' '}
         </p>
+        <p>Pickup Location: {location}</p>
         <div className="shadow border rounded-md border-neutral-300 p-3 flex justify-between items-center">
           <div>
             <p className="font-semibold">{donor_name}</p>
