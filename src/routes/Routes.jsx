@@ -67,13 +67,6 @@ export const router = createBrowserRouter([
       },
       {
         path: '/foods/:id',
-        loader: async ({ params }) => {
-          const res = await fetch(
-            `http://localhost:5100/api/foods/${params.id}`
-          );
-          if (!res.ok) throw new Error('Failed to fetch foods');
-          return res.json();
-        },
         element: (
           <PrivateRoutes>
             <FoodDetails />

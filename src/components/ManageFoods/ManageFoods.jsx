@@ -1,20 +1,20 @@
 import React, { useEffect, useRef, useState } from 'react';
 import useAuth from '../../hooks/useAuth';
 import Swal from 'sweetalert2';
+import useAxiosSecure from '../../hooks/useAxiosSecure';
 
 const ManageFoods = () => {
   const [foods, setFoods] = useState([]);
   const [selectedFood, setSelectedFood] = useState(null);
-
   const { user } = useAuth();
+
+  const axiosSecure = useAxiosSecure();
+
   useEffect(() => {
-    fetch(`http://localhost:5100/api/foods?email=${user.email}`)
-      .then(res => res.json())
-      .then(data => {
-        console.log(data);
-        setFoods(data);
-      });
-  }, [user.email]);
+    axiosSecure.get(`/foods?email=${user.email}`).then(data => {
+      setFoods(data.data);
+    });
+  }, [user, axiosSecure]);
 
   // Update
 
@@ -42,33 +42,24 @@ const ManageFoods = () => {
     };
 
     try {
-      const res = await fetch(
-        `http://localhost:5100/api/foods/${selectedFood._id}`,
-        {
-          method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(updatedData),
-        }
+      const res = await axiosSecure.patch(
+        `/foods/${selectedFood._id}`,
+        updatedData
       );
 
-      const data = await res.json();
-      if (res.ok) {
-        Swal.fire({
-          title: 'Updated!',
-          text: 'Food details have been updated.',
-          icon: 'success',
-        });
+      Swal.fire({
+        title: 'Updated!',
+        text: 'Food details have been updated.',
+        icon: 'success',
+      });
 
-        // Update foods state locally
-        setFoods(
-          foods.map(food =>
-            food._id === selectedFood._id ? { ...food, ...updatedData } : food
-          )
-        );
-        handleModalClose();
-      } else {
-        Swal.fire('Error', data.message, 'error');
-      }
+      // Update foods state locally
+      setFoods(
+        foods.map(food =>
+          food._id === selectedFood._id ? { ...food, ...updatedData } : food
+        )
+      );
+      handleModalClose();
     } catch (error) {
       console.error(error);
       Swal.fire('Error', 'Something went wrong', 'error');
@@ -85,25 +76,28 @@ const ManageFoods = () => {
       confirmButtonColor: '#fea51c',
       cancelButtonColor: '#d33',
       confirmButtonText: 'Yes, delete it!',
-    }).then(result => {
+    }).then(async result => {
       if (result.isConfirmed) {
-        fetch(`http://localhost:5100/api/foods/${_id}`, {
-          method: 'DELETE',
-        })
-          .then(res => res.json())
-          .then(data => {
-            if (data.deletedCount) {
-              Swal.fire({
-                title: 'Deleted!',
-                text: 'Your bid has been deleted.',
-                icon: 'success',
-              });
+        try {
+          const res = await axiosSecure.delete(`/foods/${_id}`);
+          if (res.data.deletedCount) {
+            Swal.fire({
+              title: 'Deleted!',
+              text: 'Food has been deleted.',
+              icon: 'success',
+            });
 
-              //
-              const remainingBids = foods.filter(food => food._id !== _id);
-              setFoods(remainingBids);
-            }
-          });
+            // Update local state
+            setFoods(foods.filter(food => food._id !== _id));
+          }
+        } catch (error) {
+          console.error(error);
+          Swal.fire(
+            'Error',
+            error.response?.data?.message || 'Something went wrong',
+            'error'
+          );
+        }
       }
     });
   };

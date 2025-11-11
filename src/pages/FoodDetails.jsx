@@ -1,11 +1,28 @@
 import React, { useEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
-import { useLoaderData } from 'react-router';
+import { useParams } from 'react-router';
 import useAuth from '../hooks/useAuth';
+import useAxiosSecure from '../hooks/useAxiosSecure';
 
 const FoodDetails = () => {
   const { user } = useAuth();
-  const food = useLoaderData();
+  const { id } = useParams();
+  const axiosSecure = useAxiosSecure();
+  const [food, setFood] = useState([]);
+
+  useEffect(() => {
+    const fetchFood = async () => {
+      try {
+        const res = await axiosSecure.get(`/foods/${id}`);
+        setFood(res.data);
+      } catch (error) {
+        console.error('Error fetching food:', error);
+      }
+    };
+
+    fetchFood();
+  }, [axiosSecure, id]);
+
   const [requested, setRequested] = useState([]);
   const {
     _id,
@@ -31,6 +48,7 @@ const FoodDetails = () => {
   const handleModalClose = () => {
     my_modal.current.close();
   };
+
   // Handle  the food request
 
   const handleFoodRequest = async e => {
@@ -43,21 +61,21 @@ const FoodDetails = () => {
       req_location,
       why_need,
       req_contact,
-      user_email: user?.email,
-      user_name: user?.displayName,
-      user_photoURL: user?.photoURL,
+      requester_email: user?.email,
+      requester_name: user?.displayName,
+      requester_photo: user?.photoURL,
       status: 'Pending',
       food_id: _id,
+      food_name,
+      donor_email,
+      donor_name,
+      donor_image,
+      createdAt: new Date(),
     };
 
     try {
-      const res = await fetch('http://localhost:5100/api/food-req', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(reqFood),
-      });
-      const result = await res.json();
-
+      const res = await axiosSecure.post('/food-req', reqFood);
+      const result = res.data;
       if (result.acknowledged && result.insertedId) {
         toast.success('Thanks for requesting ');
       } else {
@@ -65,20 +83,76 @@ const FoodDetails = () => {
       }
     } catch (error) {
       toast.error('Internal Server error');
-      console.error(error);
+      console.error('Error posting food request:', error);
     }
 
     my_modal.current.close();
   };
 
   useEffect(() => {
-    fetch(`http://localhost:5100/api/food-req/${_id}`)
-      .then(res => res.json())
-      .then(data => {
-        setRequested(data);
-        console.log(data);
+    if (!food._id) return;
+
+    const fetchFoodReq = async () => {
+      try {
+        const res = await axiosSecure.get(`/food-req/${food._id}`);
+        setRequested(res.data);
+      } catch (error) {
+        if (error.response && error.response.status === 404) {
+          setRequested([]);
+        } else {
+          console.error('Error fetching food requests:', error);
+        }
+      }
+    };
+
+    fetchFoodReq();
+  }, [axiosSecure, food]);
+
+  const handleAccept = async (reqId, foodId) => {
+    try {
+      const res = await axiosSecure.patch(`/food-req/${reqId}`, {
+        status: 'Accepted',
       });
-  }, [_id]);
+      const result = res.data;
+
+      if (result.success) {
+        toast.success('Request accepted successfully');
+
+        await axiosSecure.patch(`/foods/status/${foodId}`, {
+          food_status: 'Donated',
+        });
+
+        const updatedRequests = await axiosSecure.get(`/food-req/${_id}`);
+        setRequested(updatedRequests.data);
+      } else {
+        toast.error('Failed to accept request');
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error('Something went wrong');
+    }
+  };
+
+  const handleReject = async reqId => {
+    try {
+      const res = await axiosSecure.patch(`/food-req/${reqId}`, {
+        status: 'Rejected',
+      });
+      const result = res.data;
+
+      if (result.success) {
+        toast.success('Request rejected');
+
+        const updatedRequests = await axiosSecure.get(`/food-req/${_id}`);
+        setRequested(updatedRequests.data);
+      } else {
+        toast.error('Failed to reject request');
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error('Internal Server Error');
+    }
+  };
 
   return (
     <section className="py-15 container mx-auto px-4">
@@ -161,16 +235,47 @@ const FoodDetails = () => {
                       <td>{req?.user_name} </td>
                       <td>{req?.user_email}</td>
                       <td>
-                        <img src={req?.user_photoURL} alt={req?.user_name} />
+                        <img
+                          src={req?.user_photoURL}
+                          alt={req?.user_name}
+                          className="w-12"
+                        />
                       </td>
                       <td>{req?.req_location}</td>
                       <td>{req?.req_contact}</td>
                       <td>{req?.why_need}</td>
-                      <td>
-                        <button className="btn btn-xs mr-3 btn-success">
-                          Accept
-                        </button>
-                        <button className="btn btn-xs btn-error">Reject</button>
+                      <td className="flex flex-col md:flex-row gap-3">
+                        {req.status === 'Pending' ? (
+                          <>
+                            <button
+                              onClick={() => handleAccept(req._id, req.food_id)}
+                              className="px-5 py-2 rounded-lg font-medium bg-green-600 hover:bg-green-700 text-white transition-all duration-200 shadow-md hover:shadow-lg"
+                            >
+                              Accept
+                            </button>
+
+                            <button
+                              onClick={() => handleReject(req._id)}
+                              className="px-5 py-2 rounded-lg font-medium bg-red-600 hover:bg-red-700 text-white transition-all duration-200 shadow-md hover:shadow-lg"
+                            >
+                              Reject
+                            </button>
+                          </>
+                        ) : req.status === 'Accepted' ? (
+                          <button
+                            disabled
+                            className="px-5 py-2 rounded-lg font-semibold bg-green-100 text-green-700 cursor-not-allowed border border-green-300"
+                          >
+                            Accepted
+                          </button>
+                        ) : (
+                          <button
+                            disabled
+                            className="px-5 py-2 rounded-lg font-semibold bg-red-100 text-red-700 cursor-not-allowed border border-red-300"
+                          >
+                            Rejected
+                          </button>
+                        )}
                       </td>
                     </tr>
                   ))}
@@ -192,18 +297,21 @@ const FoodDetails = () => {
         <div className="modal-box">
           <form onSubmit={handleFoodRequest} className="space-y-3">
             <input
+              required
               name="req_location"
               type="text"
               placeholder="Your location"
               className="input w-full"
             />
             <textarea
+              required
               name="why_need"
               rows={5}
               placeholder="Why need food ? give the reason"
               className="textarea w-full"
             />
             <input
+              required
               name="req_contact"
               type="number"
               placeholder="Your contact number"
@@ -213,7 +321,10 @@ const FoodDetails = () => {
               Submit Request
             </button>
           </form>
-          <button onClick={handleModalClose} className="btn btn-error mt-5">
+          <button
+            onClick={handleModalClose}
+            className="btn btn-error mt-5 w-full"
+          >
             Close
           </button>
         </div>

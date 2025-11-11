@@ -24,7 +24,7 @@ const Hero = () => {
             surplus food and help those in need.
           </p>
           <div className="mt-15">
-            <Link to="/foods" className="">
+            <Link to="/available-foods" className="">
               <button className="btn btn-primary text-white">
                 View All Foods
               </button>

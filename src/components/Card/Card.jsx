@@ -26,8 +26,12 @@ const Card = ({ food }) => {
       <div className="card-body">
         <h2 className="card-title line-clamp-1">{food_name}</h2>
         <div className="flex items-center gap-5">
-          <p className="badge badge-md badge-success">{food_status}</p>
-          <p className="font-semibold">Expire Date: {expired_date}</p>
+          <p className="font-semibold badge badge-md badge-success">
+            {food_status}
+          </p>
+          <p className="font-semibold badge badge-md badge-info">
+            {expired_date}
+          </p>
         </div>
         <p className="font-semibold text-center mt-2">
           Serves {food_quantity} {food_quantity < 1 ? 'People' : "People's"}{' '}
