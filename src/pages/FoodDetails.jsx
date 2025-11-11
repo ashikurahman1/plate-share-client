@@ -110,7 +110,9 @@ const FoodDetails = () => {
             <p className="font-semibold mt-2 text-xl">
               Serves {food_quantity} {food_quantity < 1 ? 'People' : "People's"}{' '}
             </p>
-            <p className="text-xl font-semibold">{expired_date}</p>
+            <p className="text-xl font-semibold">
+              Expired date: {expired_date}
+            </p>
           </div>
           <div className="shadow-lg p-5 ">
             <p>

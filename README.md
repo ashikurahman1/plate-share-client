@@ -1,8 +1,8 @@
 # PlateShare — Community Food Sharing Platform
 
-**Live Site:** [](#)  
-**Client Repo:** [](#)  
-**Server Repo:** [](#)
+**Live Site:** [https://plate-share-v1.vercel.app/](#)  
+**Client Repo:** [https://github.com/ashikurahman1/plate-share-client](#)  
+**Server Repo:** [https://github.com/ashikurahman1/plate-share-server](#)
 
 ---
 

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { FcGoogle } from 'react-icons/fc';
 import { TbArrowBackUp } from 'react-icons/tb';
-import { Link, useNavigate } from 'react-router';
+import { Link, useLocation, useNavigate } from 'react-router';
 import { BiSolidHide, BiSolidShow } from 'react-icons/bi';
 
 import { updateProfile } from 'firebase/auth';
@@ -10,8 +10,26 @@ import toast from 'react-hot-toast';
 import useAuth from '../../../hooks/useAuth';
 const Register = () => {
   const [show, setShow] = useState(false);
+  const [password, setPassword] = useState('');
+  const [passwordError, setPasswordError] = useState('');
   const { setUser, createUser, loginWithGoogle } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const handlePasswordChange = e => {
+    const value = e.target.value;
+    setPassword(value);
+
+    if (value.length < 6) {
+      setPasswordError('Password must be at least 6 characters long');
+    } else if (!/[A-Z]/.test(value)) {
+      setPasswordError('Password must contain at least one uppercase letter');
+    } else if (!/[a-z]/.test(value)) {
+      setPasswordError('Password must contain at least one lowercase letter');
+    } else {
+      setPasswordError('');
+    }
+  };
 
   const handleRegister = async e => {
     e.preventDefault();
@@ -52,13 +70,24 @@ const Register = () => {
           icon: 'success',
           draggable: true,
         });
-        navigate('/');
+        navigate(`${location.state ? location.state : '/'}`);
       } else {
         toast.error('user cant added on database');
       }
     } catch (error) {
-      toast.error('Registration failed');
-      console.error(error);
+      if (error.code === 'auth/email-already-in-use') {
+        toast.error('This email is already registered. Please try logging in.');
+      } else if (error.code === 'auth/invalid-email') {
+        toast.error('Invalid email address. Please check and try again.');
+      } else if (error.code === 'auth/weak-password') {
+        toast.error('Password is too weak. Please use a stronger password.');
+      } else if (error.code === 'auth/network-request-failed') {
+        toast.error(
+          'Network error. Please check your connection and try again.'
+        );
+      } else {
+        toast.error(error.message || 'Registration failed. Please try again.');
+      }
     }
   };
 
@@ -73,7 +102,7 @@ const Register = () => {
         icon: 'success',
         draggable: true,
       });
-      navigate('/');
+      navigate(`${location.state ? location.state : '/'}`);
     } catch (error) {
       toast.error('Google login failed');
       console.log(error);
@@ -114,23 +143,29 @@ const Register = () => {
               className="input w-full mt-2 focus:outline-0 focus:border-primary"
             />
           </div>
-          <div className="">
-            <label className="">Password</label>
+          <div>
+            <label>Password :</label>
             <div className="relative">
               <input
                 name="password"
                 type={show ? 'text' : 'password'}
                 placeholder="Enter Password"
-                className="input w-full mt-2 focus:outline-0 focus:border-primary"
+                value={password}
+                onChange={handlePasswordChange}
+                className={`input w-full mt-2 focus:outline-0 focus:border-primary ${
+                  passwordError ? 'border-red-500' : ''
+                }`}
               />
               <span
                 onClick={() => setShow(!show)}
-                className="absolute top-5 right-5 z-10"
+                className="absolute top-5 right-5 z-10 cursor-pointer"
               >
                 {show ? <BiSolidHide /> : <BiSolidShow />}
               </span>
             </div>
-            {/* <p className="text-red-500 text-sm mt-2">{error}</p> */}
+            {passwordError && (
+              <p className="text-red-500 text-sm mt-2">{passwordError}</p>
+            )}
           </div>
           <div>
             <button className="btn btn-primary w-full mt-5 text-base-100">

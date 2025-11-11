@@ -2,9 +2,13 @@ import {
   createUserWithEmailAndPassword,
   GoogleAuthProvider,
   onAuthStateChanged,
+  sendPasswordResetEmail,
+  setPersistence,
   signInWithEmailAndPassword,
   signInWithPopup,
   signOut,
+  browserLocalPersistence,
+  browserSessionPersistence,
 } from 'firebase/auth';
 import { createContext, useEffect, useState } from 'react';
 import auth from '../firebase/firebase.config';
@@ -26,14 +30,23 @@ const AuthProvider = ({ children }) => {
     return signInWithPopup(auth, googleProvider);
   };
 
-  const loginWithEmail = (email, password) => {
+  const loginWithEmail = async (email, password, remember) => {
     setLoading(true);
+    await setPersistence(
+      auth,
+      remember ? browserLocalPersistence : browserSessionPersistence
+    );
     return signInWithEmailAndPassword(auth, email, password);
   };
 
   const userLogout = () => {
     setLoading(true);
     return signOut(auth);
+  };
+
+  const resetPassword = email => {
+    setLoading(true);
+    return sendPasswordResetEmail(auth, email);
   };
 
   useEffect(() => {
@@ -53,6 +66,7 @@ const AuthProvider = ({ children }) => {
     loading,
     loginWithGoogle,
     loginWithEmail,
+    resetPassword,
   };
 
   return (

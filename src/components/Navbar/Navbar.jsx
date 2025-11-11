@@ -105,7 +105,10 @@ const Navbar = () => {
           </div>
 
           {mobileMenu && (
-            <div className="md:hidden absolute top-0 right-0 w-full h-full bg-white flex flex-col z-30 p-10 pt-20 space-y-6 text-center">
+            <div
+              onClick={() => setMobileMenu(false)}
+              className="md:hidden absolute top-0 right-0 w-full h-full bg-white flex flex-col z-30 p-10 pt-20 space-y-6 text-center"
+            >
               <button
                 onClick={() => setMobileMenu(false)}
                 className="btn btn-error absolute top-5 right-5"
