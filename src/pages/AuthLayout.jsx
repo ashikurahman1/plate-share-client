@@ -21,7 +21,7 @@ const AuthLayout = () => {
       {/* Gradient Overlay */}
       <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/30 to-black/60"></div>
 
-      <div data-aos="fade-up" data-aos-duration="2000">
+      <div data-aos="fade-up" data-aos-duration="1000">
         <Outlet></Outlet>
       </div>
       <Toaster />

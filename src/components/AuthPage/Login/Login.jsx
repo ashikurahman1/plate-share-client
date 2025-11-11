@@ -89,7 +89,7 @@ const Login = () => {
           Login
         </h2>
 
-        <form onSubmit={handleLoginWihEmail} className="space-y-5">
+        <form onSubmit={handleLoginWihEmail} className="space-y-3">
           <div>
             <label>Email :</label>
             <input
@@ -161,7 +161,7 @@ const Login = () => {
       </div>
 
       <div className="text-center">
-        <Link to="/" className="mt-10 btn">
+        <Link to="/" className="mt-3 btn">
           <TbArrowBackUp />
           Go to home
         </Link>

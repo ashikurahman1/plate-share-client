@@ -11,6 +11,7 @@ import FoodDetails from '../pages/FoodDetails';
 import Error404 from '../pages/Error404';
 import Loader from '../components/Loader/Loader';
 import ManageFoods from '../components/ManageFoods/ManageFoods';
+import MyFood from '../pages/MyFood';
 
 export const router = createBrowserRouter([
   {
@@ -53,6 +54,14 @@ export const router = createBrowserRouter([
         element: (
           <PrivateRoutes>
             <ManageFoods />
+          </PrivateRoutes>
+        ),
+      },
+      {
+        path: '/my-food-requests',
+        element: (
+          <PrivateRoutes>
+            <MyFood />
           </PrivateRoutes>
         ),
       },

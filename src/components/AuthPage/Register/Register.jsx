@@ -115,7 +115,7 @@ const Register = () => {
         <h2 className="text-3xl font-semibold text-primary mb-5 lg:mb-8 text-center">
           Create your account
         </h2>
-        <form onSubmit={handleRegister} className="space-y-3 lg:space-y-5">
+        <form onSubmit={handleRegister} className="space-y-3">
           <div className="">
             <label className="">Name :</label>
             <input
@@ -187,7 +187,7 @@ const Register = () => {
         </div>
       </div>
       <div className="text-center">
-        <Link to="/" className="mt-10 btn">
+        <Link to="/" className="mt-5 btn">
           <TbArrowBackUp />
           Go to home
         </Link>
