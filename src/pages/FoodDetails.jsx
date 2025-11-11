@@ -14,7 +14,7 @@ const FoodDetails = () => {
     food_quantity,
     location,
     expired_date,
-    additinal_note,
+    additional_note,
     donor_email,
     donor_name,
     donor_image,
@@ -119,7 +119,7 @@ const FoodDetails = () => {
             </p>
           </div>
           <div className="shadow-lg p-5 ">
-            <p>Additional Note: {additinal_note} </p>
+            <p>Additional Note: {additional_note} </p>
           </div>
 
           <button

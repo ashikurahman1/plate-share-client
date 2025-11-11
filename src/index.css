@@ -6,7 +6,8 @@
   --color-primary: #fea51c;
   /* --color-secondary: teal; */
 }
-
+option:focus,
+select:focus,
 input:focus,
 textarea:focus {
   outline: 0px solid #fea51c;

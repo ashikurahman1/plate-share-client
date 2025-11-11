@@ -5,6 +5,7 @@ import { TiThMenu } from 'react-icons/ti';
 import { IoClose } from 'react-icons/io5';
 import toast from 'react-hot-toast';
 import useAuth from '../../hooks/useAuth';
+import Loader from '../Loader/Loader';
 
 const Navbar = () => {
   const { user, loading, userLogout } = useAuth();
@@ -23,7 +24,7 @@ const Navbar = () => {
     }
   };
 
-  if (loading) return <span className="">..</span>;
+  if (loading) return <Loader />;
   return (
     <nav className="bg-base-200 shadow py-2 lg:py-4">
       <div className="container mx-auto px-4 ">
