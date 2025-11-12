@@ -9,7 +9,11 @@ import Loader from './components/Loader/Loader';
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <AuthProvider>
-      <RouterProvider router={router} fallbackElement={<Loader />} />
+      <RouterProvider
+        router={router}
+        fallbackElement={<Loader />}
+        HydrateFallback={<Loader />}
+      />
     </AuthProvider>
   </StrictMode>
 );

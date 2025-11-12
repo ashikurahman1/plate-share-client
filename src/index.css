@@ -6,10 +6,33 @@
   --color-primary: #fea51c;
   /* --color-secondary: teal; */
 }
+
+nav .isActive a {
+  font-weight: 600;
+  transition: 0.3s ease-in;
+}
+nav .isActive a:hover {
+  color: #fea51c;
+}
+nav .isActive a.active {
+  color: #fea51c;
+}
+
 option:focus,
 select:focus,
 input:focus,
 textarea:focus {
   outline: 0px solid #fea51c;
   border: 1px solid #fea51c;
+}
+
+.swal2-confirm {
+  background-color: #fea51c !important;
+  color: white !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.swal2-confirm:hover {
+  background-color: #e59417 !important;
 }

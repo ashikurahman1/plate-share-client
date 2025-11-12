@@ -1,11 +1,7 @@
 import React from 'react';
-import {
-  FaFacebookF,
-  FaTwitter,
-  FaInstagram,
-  FaEnvelope,
-} from 'react-icons/fa';
+import { FaFacebookF, FaInstagram, FaEnvelope } from 'react-icons/fa';
 import logo from '../../assets/PlateShare-Logo.png';
+import { FaGithub } from 'react-icons/fa6';
 const Footer = () => {
   return (
     <footer className="bg-gray-800 text-gray-200 py-10 md:pt-15">
@@ -34,7 +30,10 @@ const Footer = () => {
               </a>
             </li>
             <li>
-              <a href="/foods" className="hover:text-white transition-colors">
+              <a
+                href="/available-foods"
+                className="hover:text-white transition-colors"
+              >
                 Available Foods
               </a>
             </li>
@@ -47,7 +46,7 @@ const Footer = () => {
               </a>
             </li>
             <li>
-              <a href="/profile" className="hover:text-white transition-colors">
+              <a href="/" className="hover:text-white transition-colors">
                 My Profile
               </a>
             </li>
@@ -59,22 +58,22 @@ const Footer = () => {
           <h2 className="font-semibold mb-6">Help & Support</h2>
           <ul className="space-y-3 text-gray-400">
             <li>
-              <a href="/faq" className="hover:text-white transition-colors">
+              <a href="/" className="hover:text-white transition-colors">
                 FAQ
               </a>
             </li>
             <li>
-              <a href="/contact" className="hover:text-white transition-colors">
+              <a href="/" className="hover:text-white transition-colors">
                 Contact Us
               </a>
             </li>
             <li>
-              <a href="/terms" className="hover:text-white transition-colors">
+              <a href="/" className="hover:text-white transition-colors">
                 Terms of Service
               </a>
             </li>
             <li>
-              <a href="/privacy" className="hover:text-white transition-colors">
+              <a href="/" className="hover:text-white transition-colors">
                 Privacy Policy
               </a>
             </li>
@@ -99,7 +98,7 @@ const Footer = () => {
           </div>
           <div className="flex space-x-4">
             <a
-              href="https://facebook.com"
+              href="https://facebook.com/ashikke2.0"
               target="_blank"
               rel="noopener noreferrer"
               className="hover:text-blue-500 transition-colors"
@@ -107,15 +106,15 @@ const Footer = () => {
               <FaFacebookF />
             </a>
             <a
-              href="https://twitter.com"
+              href="https://github.com/ashikurahman1"
               target="_blank"
               rel="noopener noreferrer"
               className="hover:text-blue-400 transition-colors"
             >
-              <FaTwitter />
+              <FaGithub />
             </a>
             <a
-              href="https://instagram.com"
+              href="#"
               target="_blank"
               rel="noopener noreferrer"
               className="hover:text-pink-500 transition-colors"

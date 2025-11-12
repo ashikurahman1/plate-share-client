@@ -61,8 +61,9 @@ const MyFood = () => {
 
   return (
     <section className="py-10 container mx-auto">
-      <h2 className="text-2xl font-bold mb-6 text-center">My Food Requests</h2>
-
+      <h2 className="text-3xl md:text-5xl font-semibold mb-4 text-center">
+        My Food <span className="text-primary">Requests</span>
+      </h2>
       {requests.length === 0 ? (
         <p className="text-center text-gray-500">No requests found.</p>
       ) : (

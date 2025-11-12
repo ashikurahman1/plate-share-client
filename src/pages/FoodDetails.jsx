@@ -88,6 +88,7 @@ const FoodDetails = () => {
 
     my_modal.current.close();
   };
+  console.log(requested);
 
   useEffect(() => {
     if (!food._id) return;
@@ -232,12 +233,12 @@ const FoodDetails = () => {
                   {requested.map((req, index) => (
                     <tr key={req._id}>
                       <td>{index + 1}</td>
-                      <td>{req?.user_name} </td>
-                      <td>{req?.user_email}</td>
+                      <td>{req?.requester_name} </td>
+                      <td>{req?.requester_email}</td>
                       <td>
                         <img
-                          src={req?.user_photoURL}
-                          alt={req?.user_name}
+                          src={req?.requester_photo}
+                          alt={req?.requester_name}
                           className="w-12"
                         />
                       </td>

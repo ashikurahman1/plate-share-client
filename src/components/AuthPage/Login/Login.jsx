@@ -10,8 +10,7 @@ import useAuth from '../../../hooks/useAuth';
 const Login = () => {
   const [show, setShow] = useState(false);
   const [remember, setRemember] = useState(false);
-  const [resetEmail, setResetEmail] = useState('');
-  const { loginWithEmail, loginWithGoogle, resetPassword } = useAuth();
+  const { loginWithEmail, loginWithGoogle } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -20,8 +19,6 @@ const Login = () => {
     e.preventDefault();
     const email = e.target.email.value;
     const password = e.target.password.value;
-
-    setResetEmail(email);
 
     try {
       await loginWithEmail(email, password, remember);
@@ -64,24 +61,6 @@ const Login = () => {
     }
   };
 
-  const handleForgotPassword = async () => {
-    if (!resetEmail) {
-      toast.error('Please enter your email first');
-      return;
-    }
-    try {
-      await resetPassword(resetEmail);
-      toast.success('Password reset email sent! Check your inbox.');
-    } catch (error) {
-      console.error(error);
-      if (error.code === 'auth/user-not-found') {
-        toast.error('No account found with this email');
-      } else {
-        toast.error('Failed to send reset email');
-      }
-    }
-  };
-
   return (
     <section className="container mx-auto max-w-2xl min-h-screen py-10 px-4">
       <div className="p-7 md:p-10 bg-white rounded-lg shadow-lg">
@@ -97,7 +76,6 @@ const Login = () => {
               type="email"
               placeholder="Enter your email"
               className="input w-full mt-2 focus:outline-0 focus:border-primary"
-              onChange={e => setResetEmail(e.target.value)}
             />
           </div>
 
@@ -119,7 +97,6 @@ const Login = () => {
             </div>
           </div>
 
-          {/* Remember me & Forgot password */}
           <div className="flex justify-between items-center text-sm">
             <label className="flex items-center gap-2 cursor-pointer">
               <input
@@ -129,11 +106,7 @@ const Login = () => {
               />
               Remember me
             </label>
-            <button
-              type="button"
-              onClick={handleForgotPassword}
-              className="text-primary hover:underline"
-            >
+            <button type="button" className="text-primary hover:underline">
               Forgot password?
             </button>
           </div>
@@ -154,17 +127,10 @@ const Login = () => {
 
         <div className="mt-5 text-center">
           Don't have an account?{' '}
-          <Link to={'/auth/Register'} className="text-primary">
+          <Link to={'/Register'} className="text-primary">
             Register
           </Link>
         </div>
-      </div>
-
-      <div className="text-center">
-        <Link to="/" className="mt-3 btn">
-          <TbArrowBackUp />
-          Go to home
-        </Link>
       </div>
     </section>
   );

@@ -56,7 +56,7 @@ const Register = () => {
         name: user?.displayName,
       };
       const res = await fetch(
-        'https://plate-share-server-eight.vercel.app/users',
+        'https://plate-share-serv1.vercel.app/api/users',
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -181,16 +181,10 @@ const Register = () => {
         </div>
         <div className="mt-5 text-center">
           Have an account? Please{' '}
-          <Link to={'/auth/login'} className="text-primary">
+          <Link to={'/login'} className="text-primary">
             Login
           </Link>
         </div>
-      </div>
-      <div className="text-center">
-        <Link to="/" className="mt-5 btn">
-          <TbArrowBackUp />
-          Go to home
-        </Link>
       </div>
     </section>
   );

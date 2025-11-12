@@ -24,7 +24,7 @@ const Navbar = () => {
     }
   };
 
-  if (loading) return <Loader />;
+  // if (loading) return <Loader />;
   return (
     <nav className="bg-base-200 shadow py-2 lg:py-4">
       <div className="container mx-auto px-4 ">
@@ -42,7 +42,7 @@ const Navbar = () => {
           </Link>
 
           {/* Menu */}
-          <div className="items-center gap-10 hidden md:flex">
+          <div className="items-center gap-10 hidden md:flex isActive">
             <NavLink to="/">Home</NavLink>
             <NavLink to="/available-foods">Available Foods</NavLink>
 
@@ -87,10 +87,7 @@ const Navbar = () => {
                 )}
               </div>
             ) : (
-              <Link
-                to="/auth/login"
-                className="btn btn-primary text-white ml-10"
-              >
+              <Link to="/login" className="btn btn-primary text-white ml-10">
                 Login
               </Link>
             )}
@@ -131,30 +128,34 @@ const Navbar = () => {
                   </div>
                 </div>
               ) : (
-                <Link to="/auth/login" className="btn btn-primary text-white">
+                <Link to="/login" className="btn btn-primary text-white">
                   Login
                 </Link>
               )}
 
               <div className="">
                 <ul className="space-y-5">
-                  <li>
-                    <Link to={'/add-food'}>Add Food</Link>
-                  </li>
-                  <li>
-                    <Link to={'/manage-foods'}>Manage My Foods</Link>
-                  </li>
-                  <li>
-                    <Link to={'/my-food-requests'}>My Food Requests</Link>
-                  </li>
-                  <li className="mt-8">
-                    <button
-                      onClick={handleLogout}
-                      className="btn btn-neutral w-full"
-                    >
-                      Logout
-                    </button>
-                  </li>
+                  {user && (
+                    <>
+                      <li>
+                        <Link to={'/add-food'}>Add Food</Link>
+                      </li>
+                      <li>
+                        <Link to={'/manage-foods'}>Manage My Foods</Link>
+                      </li>
+                      <li>
+                        <Link to={'/my-food-requests'}>My Food Requests</Link>
+                      </li>
+                      <li className="mt-8">
+                        <button
+                          onClick={handleLogout}
+                          className="btn btn-neutral w-full"
+                        >
+                          Logout
+                        </button>
+                      </li>
+                    </>
+                  )}
                 </ul>
               </div>
             </div>

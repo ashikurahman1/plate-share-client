@@ -76,8 +76,6 @@ operations, and a modern, responsive UI with smooth animations.
 ### Additional Features
 
 - Protected routes using Firebase JWT or middleware.
-- **TanStack Query** for caching and state management.
-- **React Hook Form** for form validation and control.
 - Elegant modals and alerts with **SweetAlert2**.
 - **404 Page** with creative design and a “Back to Home” button.
 
