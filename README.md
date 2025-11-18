@@ -75,9 +75,49 @@ operations, and a modern, responsive UI with smooth animations.
 
 ### Additional Features
 
+hello
+
 - Protected routes using Firebase JWT or middleware.
 - Elegant modals and alerts with **SweetAlert2**.
 - **404 Page** with creative design and a “Back to Home” button.
+
+## Dependencies
+
+**Frontend Dependencies:**
+
+- @tailwindcss/vite: ^4.1.17
+- aos: ^2.3.4
+- axios: ^1.13.2
+- daisyui: ^5.4.7
+- firebase: ^12.5.0
+- react: ^19.1.1
+- react-dom: ^19.1.1
+- react-hook-form: ^7.66.0
+- react-hot-toast: ^2.6.0
+- react-icons: ^5.5.0
+- react-router: ^7.9.5
+- sweetalert2: ^11.26.3
+- tailwindcss: ^4.1.17
+
+**Frontend Dev Dependencies:**
+
+- @eslint/js: ^9.36.0
+- @types/react: ^19.1.16
+- @types/react-dom: ^19.1.9
+- @vitejs/plugin-react: ^5.0.4
+- eslint: ^9.36.0
+- eslint-plugin-react-hooks: ^5.2.0
+- eslint-plugin-react-refresh: ^0.4.22
+- globals: ^16.4.0
+- vite: ^7.1.7
+
+**Backend Dependencies:**
+
+- express: ^4.x
+- mongoose: ^7.x
+- cors: ^2.x
+- dotenv: ^16.x
+- nodemon (for development): ^2.x
 
 ---
 
@@ -94,3 +134,28 @@ operations, and a modern, responsive UI with smooth animations.
 | **Image Hosting**  | imgbb API                                                                               |
 
 ---
+
+## Run Project Locally
+
+Follow these steps to run the project on your local machine:
+
+### **Server Setup**
+
+1. Clone the server repo:
+
+```bash
+-- Server
+git clone https://github.com/ashikurahman1/plate-share-server.git
+cd plate-share-server
+npm install
+Create a .env file and add: MONGO_URI=your_mongodb_connection_string
+                            FIREBASE_API_KEY=your_firebase_api_key
+npm run dev
+
+-- Client
+git clone https://github.com/ashikurahman1/plate-share-client.git
+cd plate-share-client
+npm install
+Create a .env file (if needed) for Firebase config.
+npm run dev
+```
