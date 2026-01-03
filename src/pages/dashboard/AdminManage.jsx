@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import useAxiosSecure from '../../hooks/useAxiosSecure';
 import Swal from 'sweetalert2';
 import { FaTrashAlt, FaUsers, FaHamburger, FaShieldAlt } from 'react-icons/fa';
+import TableSkeleton from '../../components/Skeleton/TableSkeleton';
 
 const AdminManage = () => {
     const [foods, setFoods] = useState([]);
@@ -36,6 +37,7 @@ const AdminManage = () => {
     }, [axiosSecure]);
 
     const handleDeleteFood = async (id) => {
+        // ... (rest of handleDeleteFood)
         Swal.fire({
             title: 'Delete from platform?',
             text: "Admins can remove any item violating community guidelines.",
@@ -81,8 +83,6 @@ const AdminManage = () => {
         });
     };
 
-    if (loading) return <div className="text-center py-20"><span className="loading loading-spinner loading-lg"></span></div>;
-
     return (
         <div className="animate-fade-in space-y-10">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
@@ -97,18 +97,20 @@ const AdminManage = () => {
                         onClick={() => setActiveTab('foods')}
                         className={`px-6 py-2.5 rounded-xl font-bold flex items-center gap-2 transition-all duration-300 ${activeTab === 'foods' ? 'bg-white text-primary shadow-sm' : 'text-base-content/50 hover:text-base-content'}`}
                     >
-                        <FaHamburger size={14} /> Foods ({foods.length})
+                        <FaHamburger size={14} /> Foods ({loading ? '...' : foods.length})
                     </button>
                     <button 
                         onClick={() => setActiveTab('users')}
                         className={`px-6 py-2.5 rounded-xl font-bold flex items-center gap-2 transition-all duration-300 ${activeTab === 'users' ? 'bg-white text-primary shadow-sm' : 'text-base-content/50 hover:text-base-content'}`}
                     >
-                        <FaUsers size={14} /> Users ({users.length})
+                        <FaUsers size={14} /> Users ({loading ? '...' : users.length})
                     </button>
                 </div>
             </div>
 
-            {activeTab === 'foods' ? (
+            {loading ? (
+                <TableSkeleton rows={8} cols={4} />
+            ) : activeTab === 'foods' ? (
                 <div className="bg-base-100 rounded-[3rem] shadow-xl border border-base-200 overflow-hidden">
                     <div className="overflow-x-auto">
                         <table className="table table-lg w-full">

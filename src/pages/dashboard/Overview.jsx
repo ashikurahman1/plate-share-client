@@ -7,6 +7,7 @@ import { FaHamburger, FaHandHoldingHeart, FaUsers, FaArrowUp } from 'react-icons
 const DashboardOverview = () => {
   const { user, dbUser } = useAuth();
   const axiosSecure = useAxiosSecure();
+  const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({
     myFoods: 0,
     myRequests: 0,
@@ -18,6 +19,7 @@ const DashboardOverview = () => {
   useEffect(() => {
     const fetchStats = async () => {
       try {
+        setLoading(true);
         const [myFoods, myReqs, availables] = await Promise.all([
           axiosSecure.get(`/foods?email=${user?.email}`).catch(() => ({ data: [] })),
           axiosSecure.get(`/my-requests?email=${user?.email}`).catch(() => ({ data: [] })),
@@ -43,6 +45,8 @@ const DashboardOverview = () => {
         });
       } catch (error) {
         console.error('Error fetching dashboard stats:', error);
+      } finally {
+        setLoading(false);
       }
     };
     if (user?.email) fetchStats();
@@ -80,25 +84,31 @@ const DashboardOverview = () => {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        {cards.map((card, i) => (
-          <div key={i} className={`p-8 rounded-[2.5rem] bg-gradient-to-br ${card.color} text-white shadow-xl relative overflow-hidden group`}>
-            <div className="absolute -right-4 -bottom-4 opacity-10 group-hover:scale-150 transition-transform duration-700">
-               <span className="text-9xl">{card.icon}</span>
-            </div>
-            <div className="relative z-10 flex justify-between items-start">
-              <div className="space-y-4">
-                <p className="text-sm font-bold uppercase tracking-widest opacity-80">{card.title}</p>
-                <h2 className="text-5xl font-black">{card.value}</h2>
-                <div className="flex items-center gap-2 bg-white/20 w-fit px-3 py-1 rounded-full text-xs font-bold">
-                  <FaArrowUp /> {card.trend}
+        {loading ? (
+          [...Array(3)].map((_, i) => (
+            <div key={i} className="h-44 bg-base-300 rounded-[2.5rem] animate-pulse"></div>
+          ))
+        ) : (
+          cards.map((card, i) => (
+            <div key={i} className={`p-8 rounded-[2.5rem] bg-gradient-to-br ${card.color} text-white shadow-xl relative overflow-hidden group`}>
+              <div className="absolute -right-4 -bottom-4 opacity-10 group-hover:scale-150 transition-transform duration-700">
+                <span className="text-9xl">{card.icon}</span>
+              </div>
+              <div className="relative z-10 flex justify-between items-start">
+                <div className="space-y-4">
+                  <p className="text-sm font-bold uppercase tracking-widest opacity-80">{card.title}</p>
+                  <h2 className="text-5xl font-black">{card.value}</h2>
+                  <div className="flex items-center gap-2 bg-white/20 w-fit px-3 py-1 rounded-full text-xs font-bold">
+                    <FaArrowUp /> {card.trend}
+                  </div>
+                </div>
+                <div className="bg-white/20 p-4 rounded-2xl backdrop-blur-md">
+                  {card.icon}
                 </div>
               </div>
-              <div className="bg-white/20 p-4 rounded-2xl backdrop-blur-md">
-                {card.icon}
-              </div>
             </div>
-          </div>
-        ))}
+          ))
+        )}
       </div>
 
       {/* Charts Section */}

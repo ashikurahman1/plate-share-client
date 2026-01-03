@@ -6,6 +6,44 @@ import useAxiosSecure from '../hooks/useAxiosSecure';
 import { FaMapMarkerAlt, FaCalendarAlt, FaUser, FaClock, FaCheckCircle, FaExclamationTriangle } from 'react-icons/fa';
 import Card from '../components/Card/Card';
 
+const DetailsSkeleton = () => (
+  <div className="min-h-screen pt-28 pb-20 animate-pulse bg-base-200/30">
+    <div className="container mx-auto px-4 lg:px-8">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+        <div className="lg:col-span-8 space-y-8">
+          <div className="bg-base-300 h-[500px] rounded-[3rem]"></div>
+          <div className="bg-base-100 p-8 rounded-[3rem] space-y-6">
+            <div className="h-16 bg-base-300 rounded-2xl w-3/4"></div>
+            <div className="flex gap-4">
+              <div className="h-12 bg-base-300 rounded-2xl w-32"></div>
+              <div className="h-12 bg-base-300 rounded-2xl w-32"></div>
+              <div className="h-12 bg-base-300 rounded-2xl w-32"></div>
+            </div>
+            <div className="space-y-3">
+              <div className="h-4 bg-base-300 rounded w-full"></div>
+              <div className="h-4 bg-base-300 rounded w-full"></div>
+              <div className="h-4 bg-base-300 rounded w-2/3"></div>
+            </div>
+          </div>
+        </div>
+        <div className="lg:col-span-4 space-y-8">
+          <div className="bg-base-100 p-8 rounded-[3rem] h-[300px] space-y-6">
+            <div className="h-4 bg-base-300 rounded w-1/4"></div>
+            <div className="flex items-center gap-4">
+              <div className="w-20 h-20 bg-base-300 rounded-3xl"></div>
+              <div className="space-y-2 flex-grow">
+                <div className="h-6 bg-base-300 rounded w-1/2"></div>
+                <div className="h-4 bg-base-300 rounded w-3/4"></div>
+              </div>
+            </div>
+            <div className="h-16 bg-base-300 rounded-2xl w-full"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
 const FoodDetails = () => {
   const { user } = useAuth();
   const { id } = useParams();
@@ -38,11 +76,7 @@ const FoodDetails = () => {
     window.scrollTo(0, 0);
   }, [axiosSecure, id]);
 
-  if (loading) return (
-    <div className="min-h-screen flex items-center justify-center">
-      <span className="loading loading-spinner loading-lg text-primary"></span>
-    </div>
-  );
+  if (loading) return <DetailsSkeleton />;
 
   if (!food) return (
     <div className="min-h-screen flex items-center justify-center flex-col gap-4">

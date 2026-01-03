@@ -3,18 +3,21 @@ import useAuth from '../../hooks/useAuth';
 import Swal from 'sweetalert2';
 import useAxiosSecure from '../../hooks/useAxiosSecure';
 import { FaEdit, FaTrashAlt, FaMapMarkerAlt, FaUsers, FaHistory } from 'react-icons/fa';
+import TableSkeleton from '../../components/Skeleton/TableSkeleton';
 
 const ManageFoods = () => {
   const [foods, setFoods] = useState([]);
   const [selectedFood, setSelectedFood] = useState(null);
+  const [loading, setLoading] = useState(true);
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
   const my_modal = useRef(null);
 
   useEffect(() => {
+    setLoading(true);
     axiosSecure.get(`/foods?email=${user.email}`).then(data => {
       setFoods(data.data);
-    });
+    }).finally(() => setLoading(false));
   }, [user, axiosSecure]);
 
   const handleUpdate = async e => {
@@ -85,72 +88,76 @@ const ManageFoods = () => {
         </div>
       </div>
 
-      <div className="bg-base-100 rounded-[3rem] shadow-xl border border-base-200 overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="table table-lg w-full">
-            <thead>
-              <tr className="bg-base-200/50 text-base-content/40 font-black uppercase text-[10px] tracking-[0.2em]">
-                <th className="pl-10">Food Details</th>
-                <th>Status</th>
-                <th>Pickup Details</th>
-                <th className="pr-10 text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {foods.map((food) => (
-                <tr key={food._id} className="hover:bg-base-200/30 transition-colors">
-                  <td className="pl-10 py-6">
-                    <div className="flex items-center gap-4">
-                        <div className="avatar">
-                            <div className="w-16 h-16 rounded-2xl">
-                                <img src={food.food_img_thumb} alt="" />
-                            </div>
-                        </div>
-                        <div>
-                            <p className="font-black text-lg italic">{food.food_name}</p>
-                            <p className="text-xs font-bold opacity-40 flex items-center gap-1"><FaUsers /> Serves {food.food_quantity}</p>
-                        </div>
-                    </div>
-                  </td>
-                  <td>
-                    <span className={`badge badge-md border-none font-black rounded-lg px-4 py-3 ${food.food_status === 'Available' ? 'bg-primary/10 text-primary' : 'bg-secondary/10 text-secondary'}`}>
-                      {food.food_status}
-                    </span>
-                  </td>
-                  <td>
-                    <div className="space-y-1">
-                        <p className="text-sm font-bold flex items-center gap-2"><FaMapMarkerAlt className="text-primary" /> {food.location}</p>
-                        <p className="text-[10px] font-black opacity-30 flex items-center gap-2 uppercase tracking-widest"><FaHistory /> Added on {new Date(food.createdAt || Date.now()).toLocaleDateString()}</p>
-                    </div>
-                  </td>
-                  <td className="pr-10 text-right">
-                    <div className="flex justify-end gap-2">
-                        <button 
-                            onClick={() => { setSelectedFood(food); my_modal.current.showModal(); }}
-                            className="btn btn-ghost btn-circle hover:bg-primary/10 hover:text-primary transition-colors"
-                        >
-                            <FaEdit size={18} />
-                        </button>
-                        <button 
-                            onClick={() => handleDelete(food._id)}
-                            className="btn btn-ghost btn-circle hover:bg-error/10 hover:text-error transition-colors"
-                        >
-                            <FaTrashAlt size={18} />
-                        </button>
-                    </div>
-                  </td>
+      {loading ? (
+        <TableSkeleton rows={6} cols={4} />
+      ) : (
+        <div className="bg-base-100 rounded-[3rem] shadow-xl border border-base-200 overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="table table-lg w-full">
+              <thead>
+                <tr className="bg-base-200/50 text-base-content/40 font-black uppercase text-[10px] tracking-[0.2em]">
+                  <th className="pl-10">Food Details</th>
+                  <th>Status</th>
+                  <th>Pickup Details</th>
+                  <th className="pr-10 text-right">Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-          {foods.length === 0 && (
-            <div className="py-20 text-center opacity-20 italic">
-                <FaUsers size={64} className="mx-auto mb-4" />
-                <p className="text-xl font-black">No foods shared yet</p>
-            </div>
-          )}
+              </thead>
+              <tbody>
+                {foods.map((food) => (
+                  <tr key={food._id} className="hover:bg-base-200/30 transition-colors">
+                    <td className="pl-10 py-6">
+                      <div className="flex items-center gap-4">
+                          <div className="avatar">
+                              <div className="w-16 h-16 rounded-2xl">
+                                  <img src={food.food_img_thumb} alt="" />
+                              </div>
+                          </div>
+                          <div>
+                              <p className="font-black text-lg italic">{food.food_name}</p>
+                              <p className="text-xs font-bold opacity-40 flex items-center gap-1"><FaUsers /> Serves {food.food_quantity}</p>
+                          </div>
+                      </div>
+                    </td>
+                    <td>
+                      <span className={`badge badge-md border-none font-black rounded-lg px-4 py-3 ${food.food_status === 'Available' ? 'bg-primary/10 text-primary' : 'bg-secondary/10 text-secondary'}`}>
+                        {food.food_status}
+                      </span>
+                    </td>
+                    <td>
+                      <div className="space-y-1">
+                          <p className="text-sm font-bold flex items-center gap-2"><FaMapMarkerAlt className="text-primary" /> {food.location}</p>
+                          <p className="text-[10px] font-black opacity-30 flex items-center gap-2 uppercase tracking-widest"><FaHistory /> Added on {new Date(food.createdAt || Date.now()).toLocaleDateString()}</p>
+                      </div>
+                    </td>
+                    <td className="pr-10 text-right">
+                      <div className="flex justify-end gap-2">
+                          <button 
+                              onClick={() => { setSelectedFood(food); my_modal.current.showModal(); }}
+                              className="btn btn-ghost btn-circle hover:bg-primary/10 hover:text-primary transition-colors"
+                          >
+                              <FaEdit size={18} />
+                          </button>
+                          <button 
+                              onClick={() => handleDelete(food._id)}
+                              className="btn btn-ghost btn-circle hover:bg-error/10 hover:text-error transition-colors"
+                          >
+                              <FaTrashAlt size={18} />
+                          </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            {foods.length === 0 && (
+              <div className="py-20 text-center opacity-20 italic">
+                  <FaUsers size={64} className="mx-auto mb-4" />
+                  <p className="text-xl font-black">No foods shared yet</p>
+              </div>
+            )}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Update Modal */}
       <dialog ref={my_modal} className="modal modal-bottom sm:modal-middle">
