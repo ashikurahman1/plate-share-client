@@ -15,7 +15,13 @@ import auth from '../firebase/firebase.config';
 
 export const AuthContext = createContext();
 
-const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+const isLocal = 
+  window.location.hostname === 'localhost' || 
+  window.location.hostname === '127.0.0.1' || 
+  window.location.hostname === '0.0.0.0' || 
+  window.location.hostname.startsWith('192.168.') || 
+  window.location.hostname.startsWith('10.');
+
 const API_URL = isLocal 
   ? 'http://localhost:5100/api' 
   : 'https://plate-share-serv1.vercel.app/api';

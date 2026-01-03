@@ -15,13 +15,19 @@ const AdminManage = () => {
             try {
                 setLoading(true);
                 const [foodsRes, usersRes] = await Promise.all([
-                    axiosSecure.get('/foods'),
-                    axiosSecure.get('/users')
+                    axiosSecure.get('/foods').catch(err => {
+                        console.error('Foods API failed:', err);
+                        return { data: [] };
+                    }),
+                    axiosSecure.get('/users').catch(err => {
+                        console.warn('Users API not found. Please deploy server changes.');
+                        return { data: [] };
+                    })
                 ]);
                 setFoods(foodsRes.data);
                 setUsers(usersRes.data);
             } catch (error) {
-                console.error(error);
+                console.error('Error in AdminManage fetchData:', error);
             } finally {
                 setLoading(false);
             }

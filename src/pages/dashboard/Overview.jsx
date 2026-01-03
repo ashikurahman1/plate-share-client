@@ -19,26 +19,30 @@ const DashboardOverview = () => {
     const fetchStats = async () => {
       try {
         const [myFoods, myReqs, availables] = await Promise.all([
-          axiosSecure.get(`/foods?email=${user?.email}`),
-          axiosSecure.get(`/my-requests?email=${user?.email}`),
-          axiosSecure.get('/foods/availables')
+          axiosSecure.get(`/foods?email=${user?.email}`).catch(() => ({ data: [] })),
+          axiosSecure.get(`/my-requests?email=${user?.email}`).catch(() => ({ data: [] })),
+          axiosSecure.get('/foods/availables').catch(() => ({ data: [] }))
         ]);
         
         let adminStats = {};
         if (dbUser?.role === 'admin') {
-          const res = await axiosSecure.get('/admin-stats');
-          adminStats = res.data;
+          try {
+            const res = await axiosSecure.get('/admin-stats');
+            adminStats = res.data;
+          } catch (err) {
+            console.warn('Admin stats not available yet. Please deploy server changes.');
+          }
         }
 
         setStats({
-          myFoods: myFoods.data.length,
-          myRequests: myReqs.data.length,
-          availableFoods: availables.data.length,
+          myFoods: myFoods.data?.length || 0,
+          myRequests: myReqs.data?.length || 0,
+          availableFoods: availables.data?.length || 0,
           totalUsers: adminStats.totalUsers || 0,
           totalRequests: adminStats.totalRequests || 0
         });
       } catch (error) {
-        console.error(error);
+        console.error('Error fetching dashboard stats:', error);
       }
     };
     if (user?.email) fetchStats();
