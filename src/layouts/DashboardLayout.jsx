@@ -18,7 +18,7 @@ const DashboardLayout = () => {
   const { user, userLogout, dbUser } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const navigate = useNavigate();
-
+ 
   const handleLogout = async () => {
     try {
       await userLogout();
@@ -30,16 +30,24 @@ const DashboardLayout = () => {
   };
 
   const menuItems = [
-    { name: 'Overview', path: '/dashboard', icon: <FaChartPie /> },
-    { name: 'Add Food', path: '/dashboard/add-food', icon: <FaPlusCircle /> },
-    { name: 'Manage My Foods', path: '/dashboard/manage-foods', icon: <FaList /> },
-    { name: 'My Food Requests', path: '/dashboard/my-requests', icon: <FaHandsHelping /> },
-    { name: 'Profile', path: '/dashboard/profile', icon: <FaUser /> },
+    { section: 'General', items: [
+      { name: 'Overview', path: '/dashboard', icon: <FaChartPie /> },
+      { name: 'Profile', path: '/dashboard/profile', icon: <FaUser /> },
+    ]},
+    { section: 'My Activities', items: [
+      { name: 'Add Food', path: '/dashboard/add-food', icon: <FaPlusCircle /> },
+      { name: 'Manage My Foods', path: '/dashboard/manage-foods', icon: <FaList /> },
+      { name: 'My Food Requests', path: '/dashboard/my-requests', icon: <FaHandsHelping /> },
+    ]},
   ];
 
-  // Admin specific items
   if (dbUser?.role === 'admin') {
-    menuItems.splice(3, 0, { name: 'Admin Feed', path: '/dashboard/admin-manage', icon: <FaList className="text-accent" /> });
+    menuItems.push({
+      section: 'Admin Panel',
+      items: [
+        { name: 'Moderation Hub', path: '/dashboard/admin-manage', icon: <FaList className="text-secondary" /> },
+      ]
+    });
   }
 
   return (
@@ -55,20 +63,29 @@ const DashboardLayout = () => {
           </Link>
         </div>
 
-        <nav className="mt-10 px-4 flex-grow space-y-2">
-          {menuItems.map((item) => (
-            <NavLink
-              key={item.path}
-              to={item.path}
-              end={item.path === '/dashboard'}
-              className={({ isActive }) => `
-                flex items-center gap-4 px-4 py-3.5 rounded-2xl font-bold transition-all
-                ${isActive ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'hover:bg-primary/5 opacity-60 hover:opacity-100'}
-              `}
-            >
-              <span className="text-xl">{item.icon}</span>
-              {sidebarOpen && <span>{item.name}</span>}
-            </NavLink>
+        <nav className="mt-10 px-4 flex-grow space-y-8 overflow-y-auto">
+          {menuItems.map((section, idx) => (
+            <div key={idx} className="space-y-2">
+              {sidebarOpen && (
+                <p className="px-4 text-[10px] font-black uppercase tracking-[0.2em] opacity-30">
+                  {section.section}
+                </p>
+              )}
+              {section.items.map((item) => (
+                <NavLink
+                  key={item.path}
+                  to={item.path}
+                  end={item.path === '/dashboard'}
+                  className={({ isActive }) => `
+                    flex items-center gap-4 px-4 py-3.5 rounded-2xl font-bold transition-all
+                    ${isActive ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'hover:bg-primary/5 opacity-60 hover:opacity-100'}
+                  `}
+                >
+                  <span className="text-xl">{item.icon}</span>
+                  {sidebarOpen && <span>{item.name}</span>}
+                </NavLink>
+              ))}
+            </div>
           ))}
         </nav>
 
@@ -105,12 +122,16 @@ const DashboardLayout = () => {
               <FaHome size={20} />
             </Link>
             <div className="hidden sm:block text-right">
-              <p className="font-bold text-sm">{dbUser?.name || user?.displayName}</p>
-              <p className="text-[10px] uppercase opacity-50 font-black tracking-tighter">{dbUser?.role || 'Community Member'}</p>
+              <p className="font-bold text-sm tracking-tight">{dbUser?.name || user?.displayName}</p>
+              <div className="flex justify-end">
+                 <span className={`text-[9px] px-2 py-0.5 rounded-full font-black uppercase tracking-tighter ${dbUser?.role === 'admin' ? 'bg-secondary/10 text-secondary border border-secondary/20' : 'bg-primary/10 text-primary border border-primary/20'}`}>
+                    {dbUser?.role || 'Member'}
+                 </span>
+              </div>
             </div>
-            <div className="avatar ring ring-primary ring-offset-base-100 ring-offset-2 rounded-full overflow-hidden">
+            <div className={`avatar ring ring-offset-base-100 ring-offset-2 rounded-full overflow-hidden ${dbUser?.role === 'admin' ? 'ring-secondary' : 'ring-primary'}`}>
               <div className="w-10">
-                <img src={user?.photoURL || 'https://i.pravatar.cc/150'} alt="Profile" />
+                <img src={user?.photoURL || 'https://i.ibb.co/5GzXkwq/user.png'} alt="Profile" />
               </div>
             </div>
           </div>
@@ -124,19 +145,30 @@ const DashboardLayout = () => {
 
       {/* Mobile Drawer (Simplistic version) */}
       <div className="md:hidden fixed bottom-0 left-0 w-full bg-base-100 border-t border-base-300 h-20 px-4 flex items-center justify-around z-50">
-        {menuItems.map((item) => (
+        <NavLink
+          to="/dashboard"
+          end
+          className={({ isActive }) => `p-3 rounded-xl transition-all ${isActive ? 'text-primary scale-110' : 'opacity-40'}`}
+        >
+          <FaChartPie className="text-2xl" />
+        </NavLink>
+        
+        {dbUser?.role === 'admin' && (
           <NavLink
-            key={item.path}
-            to={item.path}
-            end={item.path === '/dashboard'}
-            className={({ isActive }) => `
-              p-3 rounded-xl transition-all
-              ${isActive ? 'text-primary scale-110' : 'opacity-40'}
-            `}
+            to="/dashboard/admin-manage"
+            className={({ isActive }) => `p-3 rounded-xl transition-all ${isActive ? 'text-secondary scale-110' : 'opacity-40'}`}
           >
-            <span className="text-2xl">{item.icon}</span>
+            <FaList className="text-2xl" />
           </NavLink>
-        ))}
+        )}
+
+        <NavLink
+            to="/dashboard/profile"
+            className={({ isActive }) => `p-3 rounded-xl transition-all ${isActive ? 'text-primary scale-110' : 'opacity-40'}`}
+        >
+            <FaUser className="text-2xl" />
+        </NavLink>
+
         <button onClick={handleLogout} className="p-3 text-error opacity-40">
           <FaSignOutAlt className="text-2xl" />
         </button>

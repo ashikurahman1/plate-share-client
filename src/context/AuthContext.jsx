@@ -15,7 +15,7 @@ import auth from '../firebase/firebase.config';
 
 export const AuthContext = createContext();
 
-const isLocal = window.location.hostname === 'localhost';
+const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
 const API_URL = isLocal 
   ? 'http://localhost:5100/api' 
   : 'https://plate-share-serv1.vercel.app/api';
@@ -26,20 +26,14 @@ const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const googleProvider = new GoogleAuthProvider();
 
-  const fetchDbUser = async (user) => {
+  const fetchDbUser = async (firebaseUser) => {
+    if (!firebaseUser?.email) return;
+    
     try {
-      const res = await fetch(`${API_URL}/users/${user.email}`);
+      const res = await fetch(`${API_URL}/users/${firebaseUser.email.toLowerCase()}`);
       
       if (!res.ok) {
-        // If the endpoint doesn't exist yet (404) or server error, 
-        // we might need to create the user or just wait
-        console.warn('API returned non-ok status:', res.status);
-        return;
-      }
-
-      const contentType = res.headers.get('content-type');
-      if (!contentType || !contentType.includes('application/json')) {
-        console.error('API did not return JSON');
+        console.error('API error fetching user:', res.status);
         return;
       }
 
@@ -48,11 +42,11 @@ const AuthProvider = ({ children }) => {
       if (!data) {
         // Automatically sync to DB if missing
         const newUser = {
-          email: user.email,
-          photoURL: user.photoURL,
-          name: user.displayName, // Mapping Firebase displayName to DB name
+          email: firebaseUser.email.toLowerCase(),
+          photoURL: firebaseUser.photoURL,
+          name: firebaseUser.displayName,
           createdAt: new Date(),
-          role: user.email === 'admin@test.com' ? 'admin' : 'user'
+          role: firebaseUser.email.toLowerCase() === 'admin@test.com' ? 'admin' : 'user'
         };
         const postRes = await fetch(`${API_URL}/users`, {
           method: 'POST',
@@ -62,13 +56,15 @@ const AuthProvider = ({ children }) => {
         
         if (postRes.ok) {
           const postData = await postRes.json();
-          setDbUser({ ...newUser, role: postData.role || newUser.role });
+          setDbUser({ ...newUser, ...postData });
         }
       } else {
         setDbUser(data);
       }
     } catch (error) {
-      console.error('Error fetching/syncing db user:', error);
+      console.error('Error in fetchDbUser:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -94,18 +90,19 @@ const AuthProvider = ({ children }) => {
   const userLogout = () => {
     setLoading(true);
     setDbUser(null);
-    return signOut(auth);
+    setUser(null);
+    return signOut(auth).finally(() => setLoading(false));
   };
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, currentUser => {
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser || null);
       if (currentUser?.email) {
-        fetchDbUser(currentUser);
+        await fetchDbUser(currentUser);
       } else {
         setDbUser(null);
+        setLoading(false);
       }
-      setLoading(false);
     });
 
     return () => unsubscribe();

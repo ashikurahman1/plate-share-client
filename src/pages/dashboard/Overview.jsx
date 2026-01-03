@@ -24,18 +24,18 @@ const DashboardOverview = () => {
           axiosSecure.get('/foods/availables')
         ]);
         
-        let extraStats = {};
+        let adminStats = {};
         if (dbUser?.role === 'admin') {
-          // Future: Add real admin stats endpoints
-          // For now, using placeholders or simplified logic
-          extraStats = { totalUsers: 142, totalRequests: 58 }; 
+          const res = await axiosSecure.get('/admin-stats');
+          adminStats = res.data;
         }
 
         setStats({
           myFoods: myFoods.data.length,
           myRequests: myReqs.data.length,
           availableFoods: availables.data.length,
-          ...extraStats
+          totalUsers: adminStats.totalUsers || 0,
+          totalRequests: adminStats.totalRequests || 0
         });
       } catch (error) {
         console.error(error);

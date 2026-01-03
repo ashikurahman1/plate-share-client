@@ -1,6 +1,10 @@
 # PlateShare — Community Food Sharing Platform
 
-![Plate Share Screenshot](https://i.ibb.co/tp5BjYYW/plate-share-v1-vercel-app.png)
+### Desktop Preview
+
+| Home Page | Admin Dashboard |
+| :---: | :---: |
+| ![Home Page](src/assets/Screenshots/home_page.png) | ![Admin Dashboard](src/assets/Screenshots/admin_dash.png) |
 
 **Live Site:**
 [https://plate-share-v1.vercel.app/](https://plate-share-v1.vercel.app/)  
