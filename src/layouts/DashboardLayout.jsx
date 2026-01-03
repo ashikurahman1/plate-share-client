@@ -153,12 +153,19 @@ const DashboardLayout = () => {
           <FaChartPie className="text-2xl" />
         </NavLink>
         
-        {dbUser?.role === 'admin' && (
+        {dbUser?.role === 'admin' ? (
           <NavLink
             to="/dashboard/admin-manage"
             className={({ isActive }) => `p-3 rounded-xl transition-all ${isActive ? 'text-secondary scale-110' : 'opacity-40'}`}
           >
             <FaList className="text-2xl" />
+          </NavLink>
+        ) : (
+          <NavLink
+            to="/dashboard/my-requests"
+            className={({ isActive }) => `p-3 rounded-xl transition-all ${isActive ? 'text-primary scale-110' : 'opacity-40'}`}
+          >
+            <FaHandsHelping className="text-2xl" />
           </NavLink>
         )}
 

@@ -27,26 +27,49 @@ const AuthProvider = ({ children }) => {
   const googleProvider = new GoogleAuthProvider();
 
   const fetchDbUser = async (firebaseUser) => {
-    if (!firebaseUser?.email) return;
+    if (!firebaseUser?.email) {
+      setLoading(false);
+      return;
+    }
     
     try {
-      const res = await fetch(`${API_URL}/users/${firebaseUser.email.toLowerCase()}`);
+      const email = firebaseUser.email.toLowerCase();
+      const res = await fetch(`${API_URL}/users/${email}`);
       
       if (!res.ok) {
         console.error('API error fetching user:', res.status);
+        // If it's a 404, we might need to create the user record
+        if (res.status === 404) {
+             const newUser = {
+              email,
+              photoURL: firebaseUser.photoURL,
+              name: firebaseUser.displayName || 'Anonymous',
+              createdAt: new Date(),
+              role: email === 'admin@test.com' ? 'admin' : 'user'
+            };
+            const postRes = await fetch(`${API_URL}/users`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(newUser),
+            });
+            if (postRes.ok) {
+              const postData = await postRes.json();
+              setDbUser({ ...newUser, ...postData });
+            }
+        }
         return;
       }
 
       const data = await res.json();
       
       if (!data) {
-        // Automatically sync to DB if missing
+        // Automatically sync to DB if missing but res was OK (unlikely but safe)
         const newUser = {
-          email: firebaseUser.email.toLowerCase(),
+          email,
           photoURL: firebaseUser.photoURL,
-          name: firebaseUser.displayName,
+          name: firebaseUser.displayName || 'Anonymous',
           createdAt: new Date(),
-          role: firebaseUser.email.toLowerCase() === 'admin@test.com' ? 'admin' : 'user'
+          role: email === 'admin@test.com' ? 'admin' : 'user'
         };
         const postRes = await fetch(`${API_URL}/users`, {
           method: 'POST',
@@ -98,7 +121,10 @@ const AuthProvider = ({ children }) => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser || null);
       if (currentUser?.email) {
-        await fetchDbUser(currentUser);
+        // Small delay to ensure Firebase state is fully propagated
+        setTimeout(() => {
+          fetchDbUser(currentUser);
+        }, 500);
       } else {
         setDbUser(null);
         setLoading(false);
