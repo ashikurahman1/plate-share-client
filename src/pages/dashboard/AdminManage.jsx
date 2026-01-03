@@ -1,0 +1,112 @@
+import React, { useEffect, useState } from 'react';
+import useAxiosSecure from '../../hooks/useAxiosSecure';
+import Swal from 'sweetalert2';
+import { FaTrashAlt, FaSearch, FaFilter } from 'react-icons/fa';
+
+const AdminManage = () => {
+    const [foods, setFoods] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const axiosSecure = useAxiosSecure();
+
+    useEffect(() => {
+        const fetchAllFoods = async () => {
+            try {
+                // Fetching all foods (admins see everything)
+                // We'll use the same /api/foods but without email query
+                const res = await axiosSecure.get('/foods');
+                setFoods(res.data);
+            } catch (error) {
+                console.error(error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchAllFoods();
+    }, [axiosSecure]);
+
+    const handleDelete = async (id) => {
+        Swal.fire({
+            title: 'Delete from platform?',
+            text: "Admins can remove any item violating community guidelines.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ff4d4d',
+            confirmButtonText: 'Yes, remove it!'
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    await axiosSecure.delete(`/foods/${id}`);
+                    setFoods(foods.filter(f => f._id !== id));
+                    Swal.fire('Removed!', 'The item has been deleted from the platform.', 'success');
+                } catch (error) {
+                    Swal.fire('Error', 'Action failed', 'error');
+                }
+            }
+        });
+    };
+
+    if (loading) return <div className="text-center py-20"><span className="loading loading-spinner loading-lg"></span></div>;
+
+    return (
+        <div className="animate-fade-in space-y-10">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div>
+                    <h1 className="text-4xl font-black italic mb-2">Admin <span className="text-accent italic">Listing Hub .</span></h1>
+                    <p className="text-base-content/60 font-medium">Monitoring all {foods.length} items currently listed on PlateShare.</p>
+                </div>
+            </div>
+
+            <div className="bg-base-100 rounded-[3rem] shadow-xl border border-base-200 overflow-hidden">
+                <div className="overflow-x-auto">
+                    <table className="table table-lg w-full">
+                        <thead>
+                            <tr className="bg-base-200/50 text-base-content/40 font-black uppercase text-[10px] tracking-[0.2em]">
+                                <th className="pl-10">Food & Donor</th>
+                                <th>Status</th>
+                                <th>Donor Email</th>
+                                <th className="pr-10 text-right">Moderation</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {foods.map((food) => (
+                                <tr key={food._id} className="hover:bg-base-100 transition-colors">
+                                    <td className="pl-10 py-6">
+                                        <div className="flex items-center gap-4">
+                                            <div className="avatar">
+                                                <div className="w-12 h-12 rounded-xl">
+                                                    <img src={food.food_img_thumb} alt="" />
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <p className="font-black text-lg italic">{food.food_name}</p>
+                                                <p className="text-[10px] font-bold opacity-40">by {food.donor_name}</p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span className={`badge badge-sm font-black rounded-lg ${food.food_status === 'Available' ? 'bg-primary/10 text-primary' : 'bg-secondary/10 text-secondary'}`}>
+                                            {food.food_status}
+                                        </span>
+                                    </td>
+                                    <td className="text-sm font-medium opacity-60">
+                                        {food.donor_email}
+                                    </td>
+                                    <td className="pr-10 text-right">
+                                        <button 
+                                            onClick={() => handleDelete(food._id)}
+                                            className="btn btn-ghost btn-circle hover:bg-error/10 hover:text-error transition-colors text-error"
+                                        >
+                                            <FaTrashAlt size={18} />
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export default AdminManage;

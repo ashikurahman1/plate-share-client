@@ -1,58 +1,61 @@
 import React, { useEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
-import { useParams } from 'react-router';
+import { useParams, Link } from 'react-router';
 import useAuth from '../hooks/useAuth';
 import useAxiosSecure from '../hooks/useAxiosSecure';
+import { FaMapMarkerAlt, FaCalendarAlt, FaUser, FaClock, FaCheckCircle, FaExclamationTriangle } from 'react-icons/fa';
+import Card from '../components/Card/Card';
 
 const FoodDetails = () => {
   const { user } = useAuth();
   const { id } = useParams();
   const axiosSecure = useAxiosSecure();
-  const [food, setFood] = useState([]);
+  const [food, setFood] = useState(null);
+  const [relatedFoods, setRelatedFoods] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const my_modal = useRef(null);
 
   useEffect(() => {
     const fetchFood = async () => {
       try {
         const res = await axiosSecure.get(`/foods/${id}`);
         setFood(res.data);
+        
+        // Fetch related foods (same location or just other available)
+        const allFoodsRes = await axiosSecure.get('/foods/availables');
+        const related = allFoodsRes.data
+          .filter(f => f._id !== id)
+          .slice(0, 3);
+        setRelatedFoods(related);
       } catch (error) {
         console.error('Error fetching food:', error);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchFood();
+    window.scrollTo(0, 0);
   }, [axiosSecure, id]);
 
-  const [requested, setRequested] = useState([]);
-  const {
-    _id,
-    food_name,
-    food_image,
-    food_quantity,
-    location,
-    expired_date,
-    additional_note,
-    donor_email,
-    donor_name,
-    donor_image,
-    food_status,
-  } = food;
+  if (loading) return (
+    <div className="min-h-screen flex items-center justify-center">
+      <span className="loading loading-spinner loading-lg text-primary"></span>
+    </div>
+  );
 
-  const my_modal = useRef(null);
-  // Open Modal
-  const handleOpenModal = () => {
-    my_modal.current.showModal();
-  };
-  // Close Modal
-
-  const handleModalClose = () => {
-    my_modal.current.close();
-  };
-
-  // Handle  the food request
+  if (!food) return (
+    <div className="min-h-screen flex items-center justify-center flex-col gap-4">
+      <FaExclamationTriangle size={64} className="text-error opacity-20" />
+      <h2 className="text-3xl font-black">Food item not found</h2>
+      <Link to="/available-foods" className="btn btn-primary">Back to Explore</Link>
+    </div>
+  );
 
   const handleFoodRequest = async e => {
     e.preventDefault();
+    if (!user) return toast.error('Please login to request food');
+
     const req_location = e.target.req_location.value;
     const why_need = e.target.why_need.value;
     const req_contact = e.target.req_contact.value;
@@ -65,272 +68,151 @@ const FoodDetails = () => {
       requester_name: user?.displayName,
       requester_photo: user?.photoURL,
       status: 'Pending',
-      food_id: _id,
-      food_name,
-      donor_email,
-      donor_name,
-      donor_image,
+      food_id: food._id,
+      food_name: food.food_name,
+      donor_email: food.donor_email,
+      donor_name: food.donor_name,
+      donor_image: food.donor_image,
       createdAt: new Date(),
     };
 
     try {
       const res = await axiosSecure.post('/food-req', reqFood);
-      const result = res.data;
-      if (result.acknowledged && result.insertedId) {
-        toast.success('Thanks for requesting ');
-      } else {
-        toast.error('Failed to send req');
+      if (res.data.acknowledged) {
+        toast.success('Food requested successfully!');
+        my_modal.current.close();
       }
     } catch (error) {
-      toast.error('Internal Server error');
-      console.error('Error posting food request:', error);
-    }
-
-    my_modal.current.close();
-  };
-  console.log(requested);
-
-  useEffect(() => {
-    if (!food._id) return;
-
-    const fetchFoodReq = async () => {
-      try {
-        const res = await axiosSecure.get(`/food-req/${food._id}`);
-        setRequested(res.data);
-      } catch (error) {
-        if (error.response && error.response.status === 404) {
-          setRequested([]);
-        } else {
-          console.error('Error fetching food requests:', error);
-        }
-      }
-    };
-
-    fetchFoodReq();
-  }, [axiosSecure, food]);
-
-  const handleAccept = async (reqId, foodId) => {
-    try {
-      const res = await axiosSecure.patch(`/food-req/${reqId}`, {
-        status: 'Accepted',
-      });
-      const result = res.data;
-
-      if (result.success) {
-        toast.success('Request accepted successfully');
-
-        await axiosSecure.patch(`/foods/status/${foodId}`, {
-          food_status: 'Donated',
-        });
-
-        const updatedRequests = await axiosSecure.get(`/food-req/${_id}`);
-        setRequested(updatedRequests.data);
-      } else {
-        toast.error('Failed to accept request');
-      }
-    } catch (error) {
-      console.error(error);
-      toast.error('Something went wrong');
-    }
-  };
-
-  const handleReject = async reqId => {
-    try {
-      const res = await axiosSecure.patch(`/food-req/${reqId}`, {
-        status: 'Rejected',
-      });
-      const result = res.data;
-
-      if (result.success) {
-        toast.success('Request rejected');
-
-        const updatedRequests = await axiosSecure.get(`/food-req/${_id}`);
-        setRequested(updatedRequests.data);
-      } else {
-        toast.error('Failed to reject request');
-      }
-    } catch (error) {
-      console.error(error);
-      toast.error('Internal Server Error');
+      toast.error('Failed to send request');
     }
   };
 
   return (
-    <section className="py-15 container mx-auto px-4">
-      <div className="flex flex-col lg:flex-row gap-10 p-5">
-        {/* Left */}
-        <div className="w-full lg:w-1/2 overflow-hidden shadow-md rounded-md p-5">
-          <img
-            src={food_image}
-            alt={food_name}
-            className="w-full h-56 lg:h-80 object-cover rounded-md"
-          />
-          <div className="shadow-md rounded-md p-5 mt-10 flex flex-col md:flex-row items-center gap-5">
-            <img
-              src={donor_image}
-              alt={donor_name}
-              className="max-w-20 rounded-md min-h-20 object-cover"
-            />
-            <div className="">
-              <h2 className="text-xl font-semibold">{donor_name}</h2>
-              <p>{donor_email} </p>
+    <div className="min-h-screen pt-28 pb-20 bg-base-200/30">
+      <div className="container mx-auto px-4 lg:px-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+          {/* Main Content */}
+          <div className="lg:col-span-8 space-y-8">
+            {/* Header & Image */}
+            <div className="bg-base-100 rounded-[3rem] overflow-hidden shadow-2xl border border-base-200">
+              <div className="relative h-[400px] md:h-[500px]">
+                <img src={food.food_image} alt={food.food_name} className="w-full h-full object-cover" />
+                <div className="absolute top-8 right-8">
+                  <span className="badge badge-lg bg-primary border-none text-white font-black px-6 py-5 rounded-2xl shadow-xl">
+                    {food.food_status}
+                  </span>
+                </div>
+              </div>
+              
+              <div className="p-8 md:p-12">
+                <h1 className="text-4xl md:text-6xl font-black mb-6 leading-tight italic">{food.food_name} <span className="text-primary">.</span></h1>
+                
+                <div className="flex flex-wrap gap-6 mb-10">
+                  <div className="flex items-center gap-3 bg-base-200/50 px-5 py-3 rounded-2xl">
+                    <FaMapMarkerAlt className="text-primary text-xl" />
+                    <span className="font-bold">{food.location}</span>
+                  </div>
+                  <div className="flex items-center gap-3 bg-base-200/50 px-5 py-3 rounded-2xl">
+                    <FaClock className="text-secondary text-xl" />
+                    <span className="font-bold">Serves {food.food_quantity} People</span>
+                  </div>
+                  <div className="flex items-center gap-3 bg-base-200/50 px-5 py-3 rounded-2xl">
+                    <FaCalendarAlt className="text-accent text-xl" />
+                    <span className="font-bold">Expires: {food.expired_date}</span>
+                  </div>
+                </div>
+
+                <div className="prose prose-lg max-w-none text-base-content/70">
+                  <h3 className="text-2xl font-black text-base-content mb-4 italic">Description</h3>
+                  <p className="leading-relaxed font-medium">
+                    {food.additional_note || "No additional notes provided for this item."}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Related Items */}
+            <div>
+              <h3 className="text-3xl font-black mb-8 italic px-4">Suggested Items <span className="text-primary italic">.</span></h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                {relatedFoods.map(f => (
+                  <Card key={f._id} food={f} />
+                ))}
+              </div>
             </div>
           </div>
-        </div>
-        <div className="space-y-3">
-          <h2 className="text-3xl md:text-5xl font-semibold">{food_name}</h2>
-          <p className="badge badge-success my-3">{food_status} </p>
 
-          <div className="shadow-lg p-5 ">
-            <p className="font-semibold mt-2 text-xl">
-              Serves {food_quantity} {food_quantity < 1 ? 'People' : "People's"}{' '}
-            </p>
-            <p className="text-xl font-semibold">
-              Expired date: {expired_date}
-            </p>
-          </div>
-          <div className="shadow-lg p-5 ">
-            <p>
-              <span className="font-semibold">Pickup Location: </span>{' '}
-              {location}
-            </p>
-          </div>
-          <div className="shadow-lg p-5 ">
-            <p>Additional Note: {additional_note} </p>
-          </div>
+          {/* Sidebar */}
+          <div className="lg:col-span-4 space-y-8">
+            {/* Donor Card */}
+            <div className="bg-base-100 p-8 rounded-[3rem] shadow-xl border border-base-200">
+              <h4 className="text-xs uppercase font-black tracking-widest opacity-40 mb-6">Food Donor</h4>
+              <div className="flex items-center gap-4 mb-8">
+                <div className="avatar">
+                  <div className="w-20 h-20 rounded-3xl ring ring-primary ring-offset-base-100 ring-offset-4">
+                    <img src={food.donor_image} alt={food.donor_name} />
+                  </div>
+                </div>
+                <div>
+                  <h5 className="text-xl font-black">{food.donor_name}</h5>
+                  <p className="text-sm opacity-60 font-medium">{food.donor_email}</p>
+                </div>
+              </div>
+              
+              <div className="space-y-4 pt-6 border-t border-base-200">
+                {user ? (
+                   food.donor_email === user.email ? (
+                    <Link to="/dashboard/manage-foods" className="btn btn-neutral w-full rounded-2xl text-lg font-bold">Manage This Listing</Link>
+                  ) : (
+                    <button onClick={() => my_modal.current.showModal()} className="btn btn-primary w-full h-16 rounded-2xl text-lg text-white font-black shadow-lg shadow-primary/20">
+                      Request This Food
+                    </button>
+                  )
+                ) : (
+                  <Link to="/login" className="btn btn-primary w-full h-16 rounded-2xl text-lg text-white font-black">Login to Request</Link>
+                )}
+              </div>
+            </div>
 
-          <button
-            onClick={handleOpenModal}
-            className="btn btn-primary text-white  w-full text-lg mt-8"
-          >
-            Request Food
-          </button>
+            {/* Safety Tips */}
+            <div className="bg-neutral text-neutral-content p-8 rounded-[3rem] shadow-xl">
+              <h4 className="text-xl font-black mb-4 italic">Safety First <span className="text-primary italic">!</span></h4>
+              <ul className="space-y-4 opacity-70 font-medium text-sm leading-relaxed">
+                <li className="flex gap-3"><FaCheckCircle className="text-primary shrink-0 mt-1" /> Inspect food quality on arrival</li>
+                <li className="flex gap-3"><FaCheckCircle className="text-primary shrink-0 mt-1" /> Check for any unusual smells</li>
+                <li className="flex gap-3"><FaCheckCircle className="text-primary shrink-0 mt-1" /> Coordinate in a public place</li>
+              </ul>
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Food Request Table */}
-      {donor_email == user.email && (
-        <div className="py-10 p-5">
-          {requested && requested.length > 0 ? (
-            <div className="overflow-x-auto">
-              <h2 className="text-3xl font-semibold text-center mb-5">
-                Total food request <span>({requested.length})</span>
-              </h2>
-              <table className="table">
-                <thead>
-                  <tr className="">
-                    <td>SL</td>
-                    <td>Name</td>
-                    <td>email</td>
-                    <td>Photo</td>
-                    <td>Address</td>
-                    <td>Contact</td>
-                    <td>Why Need Food</td>
-                    <td>Action</td>
-                  </tr>
-                </thead>
-                <tbody>
-                  {requested.map((req, index) => (
-                    <tr key={req._id}>
-                      <td>{index + 1}</td>
-                      <td>{req?.requester_name} </td>
-                      <td>{req?.requester_email}</td>
-                      <td>
-                        <img
-                          src={req?.requester_photo}
-                          alt={req?.requester_name}
-                          className="w-12"
-                        />
-                      </td>
-                      <td>{req?.req_location}</td>
-                      <td>{req?.req_contact}</td>
-                      <td>{req?.why_need}</td>
-                      <td className="flex flex-col md:flex-row gap-3">
-                        {req.status === 'Pending' ? (
-                          <>
-                            <button
-                              onClick={() => handleAccept(req._id, req.food_id)}
-                              className="px-5 py-2 rounded-lg font-medium bg-green-600 hover:bg-green-700 text-white transition-all duration-200 shadow-md hover:shadow-lg"
-                            >
-                              Accept
-                            </button>
-
-                            <button
-                              onClick={() => handleReject(req._id)}
-                              className="px-5 py-2 rounded-lg font-medium bg-red-600 hover:bg-red-700 text-white transition-all duration-200 shadow-md hover:shadow-lg"
-                            >
-                              Reject
-                            </button>
-                          </>
-                        ) : req.status === 'Accepted' ? (
-                          <button
-                            disabled
-                            className="px-5 py-2 rounded-lg font-semibold bg-green-100 text-green-700 cursor-not-allowed border border-green-300"
-                          >
-                            Accepted
-                          </button>
-                        ) : (
-                          <button
-                            disabled
-                            className="px-5 py-2 rounded-lg font-semibold bg-red-100 text-red-700 cursor-not-allowed border border-red-300"
-                          >
-                            Rejected
-                          </button>
-                        )}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+      {/* Request Modal */}
+      <dialog ref={my_modal} className="modal modal-bottom sm:modal-middle">
+        <div className="modal-box rounded-[3rem] p-10 bg-base-100 border border-base-200">
+          <h3 className="text-3xl font-black mb-8 italic">Request <span className="text-primary italic">Food .</span></h3>
+          <form onSubmit={handleFoodRequest} className="space-y-6">
+            <div className="form-control">
+              <label className="label"><span className="label-text font-bold">Your Location</span></label>
+              <input name="req_location" type="text" placeholder="e.g. 123 Street, City" required className="input input-bordered w-full rounded-2xl" />
             </div>
-          ) : (
-            <p>No Request found for this Food</p>
-          )}
-        </div>
-      )}
-
-      {/* Modal */}
-      <dialog
-        ref={my_modal}
-        id="my_modal_5"
-        className="modal modal-bottom sm:modal-middle"
-      >
-        <div className="modal-box">
-          <form onSubmit={handleFoodRequest} className="space-y-3">
-            <input
-              required
-              name="req_location"
-              type="text"
-              placeholder="Your location"
-              className="input w-full"
-            />
-            <textarea
-              required
-              name="why_need"
-              rows={5}
-              placeholder="Why need food ? give the reason"
-              className="textarea w-full"
-            />
-            <input
-              required
-              name="req_contact"
-              type="number"
-              placeholder="Your contact number"
-              className="input w-full"
-            />
-            <button type="submit" className="btn btn-primary text-white w-full">
-              Submit Request
-            </button>
+            <div className="form-control">
+              <label className="label"><span className="label-text font-bold">Why do you need this?</span></label>
+              <textarea name="why_need" rows={4} placeholder="Briefly explain the reason..." required className="textarea textarea-bordered w-full rounded-2xl" />
+            </div>
+            <div className="form-control">
+              <label className="label"><span className="label-text font-bold">Contact Number</span></label>
+              <input name="req_contact" type="tel" placeholder="Your direct phone" required className="input input-bordered w-full rounded-2xl" />
+            </div>
+            
+            <div className="pt-4 flex flex-col gap-3">
+              <button type="submit" className="btn btn-primary h-14 rounded-2xl text-white font-black">Submit Request</button>
+              <button type="button" onClick={() => my_modal.current.close()} className="btn btn-ghost rounded-2xl opacity-60">Cancel</button>
+            </div>
           </form>
-          <button
-            onClick={handleModalClose}
-            className="btn btn-error mt-5 w-full"
-          >
-            Close
-          </button>
         </div>
       </dialog>
-    </section>
+    </div>
   );
 };
 

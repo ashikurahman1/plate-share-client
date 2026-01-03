@@ -5,17 +5,25 @@ import AvailableFoods from '../pages/AvailableFoods';
 import Register from '../components/AuthPage/Register/Register';
 import Login from '../components/AuthPage/Login/Login';
 import PrivateRoutes from './PrivateRoutes';
-import AddFood from '../pages/AddFood';
 import FoodDetails from '../pages/FoodDetails';
 import Error404 from '../pages/Error404';
-import ManageFoods from '../components/ManageFoods/ManageFoods';
-import MyFood from '../pages/MyFood';
+import AboutUs from '../pages/AboutUs';
+import ContactUs from '../pages/ContactUs';
+
+// Dashboard Components
+import DashboardLayout from '../layouts/DashboardLayout';
+import DashboardOverview from '../pages/dashboard/Overview';
+import AddFood from '../pages/dashboard/AddFood';
+import ManageFoods from '../pages/dashboard/ManageFoods';
+import MyFoodRequests from '../pages/dashboard/MyFoodRequests';
+import Profile from '../pages/dashboard/Profile';
+import AdminManage from '../pages/dashboard/AdminManage';
+import AdminRoute from './AdminRoute';
 
 export const router = createBrowserRouter([
   {
     path: '/',
     Component: RootLayout,
-
     errorElement: <Error404 />,
     children: [
       {
@@ -25,10 +33,6 @@ export const router = createBrowserRouter([
           await fetch(
             'https://plate-share-serv1.vercel.app/api/featured-foods'
           ).then(res => res.json()),
-      },
-      {
-        path: '/',
-        Component: Home,
       },
       {
         path: '/available-foods',
@@ -42,36 +46,16 @@ export const router = createBrowserRouter([
         Component: AvailableFoods,
       },
       {
-        path: '/add-food',
-        element: (
-          <PrivateRoutes>
-            <AddFood />
-          </PrivateRoutes>
-        ),
-      },
-      {
-        path: '/manage-foods',
-        element: (
-          <PrivateRoutes>
-            <ManageFoods />
-          </PrivateRoutes>
-        ),
-      },
-      {
-        path: '/my-food-requests',
-        element: (
-          <PrivateRoutes>
-            <MyFood />
-          </PrivateRoutes>
-        ),
-      },
-      {
         path: '/foods/:id',
-        element: (
-          <PrivateRoutes>
-            <FoodDetails />
-          </PrivateRoutes>
-        ),
+        Component: FoodDetails,
+      },
+      {
+        path: '/about',
+        Component: AboutUs,
+      },
+      {
+        path: '/contact',
+        Component: ContactUs,
       },
       {
         path: '/register',
@@ -80,6 +64,44 @@ export const router = createBrowserRouter([
       {
         path: '/login',
         Component: Login,
+      },
+    ],
+  },
+  {
+    path: '/dashboard',
+    element: (
+      <PrivateRoutes>
+        <DashboardLayout />
+      </PrivateRoutes>
+    ),
+    children: [
+      {
+        index: true,
+        Component: DashboardOverview,
+      },
+      {
+        path: 'add-food',
+        Component: AddFood,
+      },
+      {
+        path: 'manage-foods',
+        Component: ManageFoods,
+      },
+      {
+        path: 'my-requests',
+        Component: MyFoodRequests,
+      },
+      {
+        path: 'profile',
+        Component: Profile,
+      },
+      {
+        path: 'admin-manage',
+        element: (
+          <AdminRoute>
+            <AdminManage />
+          </AdminRoute>
+        ),
       },
     ],
   },

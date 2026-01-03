@@ -75,8 +75,6 @@ operations, and a modern, responsive UI with smooth animations.
 
 ### Additional Features
 
-hello
-
 - Protected routes using Firebase JWT or middleware.
 - Elegant modals and alerts with **SweetAlert2**.
 - **404 Page** with creative design and a “Back to Home” button.

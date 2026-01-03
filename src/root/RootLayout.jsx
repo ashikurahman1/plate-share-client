@@ -1,18 +1,24 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Navbar from '../components/Navbar/Navbar';
 import Footer from '../components/Footer/Footer';
-import { Outlet } from 'react-router';
+import { Outlet, useLocation } from 'react-router';
 import { Toaster } from 'react-hot-toast';
 
 const RootLayout = () => {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
   return (
-    <div>
+    <div className="flex flex-col min-h-screen">
       <Navbar />
-      <main className="min-h-screen">
-        <Outlet></Outlet>
+      <main className="flex-grow overflow-x-hidden">
+        <Outlet />
       </main>
       <Footer />
-      <Toaster />
+      <Toaster position="top-center" reverseOrder={false} />
     </div>
   );
 };

@@ -1,133 +1,91 @@
 import React from 'react';
-import { FaFacebookF, FaInstagram, FaEnvelope } from 'react-icons/fa';
+import { Link } from 'react-router';
 import logo from '../../assets/PlateShare-Logo.png';
-import { FaGithub } from 'react-icons/fa6';
+import { FaFacebook, FaGithub, FaLinkedin, FaTwitter } from 'react-icons/fa';
+
 const Footer = () => {
   return (
-    <footer className="bg-gray-800 text-gray-200 py-10 md:pt-15">
-      <div className="px-4 grid container mx-auto grid-cols-1 md:grid-cols-4 gap-8">
-        {/* Logo & About */}
-        <div className="flex flex-col items-start">
-          <div className="flex items-center">
-            <img src={logo} alt="PlateShare Logo" className="w-15" />
-            <h1 className="text-2xl font-bold text-white">
-              Plate<span className="text-primary">Share</span>
-            </h1>
+    <footer className="bg-base-200 pt-20 pb-10 border-t border-base-300">
+      <div className="container mx-auto px-4 lg:px-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
+          {/* Brand Section */}
+          <div className="space-y-6">
+            <Link to="/" className="flex items-center gap-2 group">
+              <div className="bg-primary p-1.5 rounded-xl group-hover:rotate-12 transition-transform duration-300">
+                <img
+                  src={logo}
+                  alt="PlateShare Logo"
+                  className="w-8 h-8 object-contain brightness-0 invert"
+                />
+              </div>
+              <h1 className="text-2xl font-black tracking-tight">
+                Plate<span className="text-primary">Share</span>
+              </h1>
+            </Link>
+            <p className="text-base-content/70 leading-relaxed max-w-xs text-sm md:text-base">
+              Bridging the gap between food waste and hunger. Join our community to share surplus food and make a difference.
+            </p>
+            <div className="flex gap-4">
+              <a href="#" className="btn btn-ghost btn-circle btn-sm hover:text-primary transition-colors border border-base-300">
+                <FaFacebook size={18} />
+              </a>
+              <a href="#" className="btn btn-ghost btn-circle btn-sm hover:text-primary transition-colors border border-base-300">
+                <FaTwitter size={18} />
+              </a>
+              <a href="#" className="btn btn-ghost btn-circle btn-sm hover:text-primary transition-colors border border-base-300">
+                <FaLinkedin size={18} />
+              </a>
+              <a href="#" className="btn btn-ghost btn-circle btn-sm hover:text-primary transition-colors border border-base-300">
+                <FaGithub size={18} />
+              </a>
+            </div>
           </div>
-          <p className="mt-2 text-sm text-gray-400">
-            Community Food Sharing Platform to reduce food waste and help
-            others.
+
+          {/* Quick Links */}
+          <div>
+            <h3 className="text-lg font-bold mb-6">Quick Links</h3>
+            <ul className="space-y-4 text-base-content/70">
+              <li><Link to="/" className="hover:text-primary transition-colors">Home</Link></li>
+              <li><Link to="/available-foods" className="hover:text-primary transition-colors">Available Foods</Link></li>
+              <li><Link to="/about" className="hover:text-primary transition-colors">About Us</Link></li>
+              <li><Link to="/contact" className="hover:text-primary transition-colors">Contact</Link></li>
+            </ul>
+          </div>
+
+          {/* Support */}
+          <div>
+            <h3 className="text-lg font-bold mb-6">Support</h3>
+            <ul className="space-y-4 text-base-content/70">
+              <li><Link to="/help" className="hover:text-primary transition-colors">Help Center</Link></li>
+              <li><Link to="/privacy" className="hover:text-primary transition-colors">Privacy Policy</Link></li>
+              <li><Link to="/terms" className="hover:text-primary transition-colors">Terms of Service</Link></li>
+              <li><Link to="/donation" className="hover:text-primary transition-colors">Donation</Link></li>
+            </ul>
+          </div>
+
+          {/* Newsletter */}
+          <div>
+            <h3 className="text-lg font-bold mb-6">Newsletter</h3>
+            <p className="text-base-content/70 mb-4 text-sm">Stay updated with our latest news and events.</p>
+            <div className="join w-full">
+              <input type="email" placeholder="email@example.com" className="input input-bordered join-item w-full focus:outline-none focus:border-primary border-base-300" />
+              <button className="btn btn-primary join-item text-white">Join</button>
+            </div>
+          </div>
+        </div>
+
+        <div className="divider opacity-10"></div>
+
+        <div className="flex flex-col md:flex-row justify-between items-center gap-4 pt-8">
+          <p className="text-base-content/60 text-sm">
+            © {new Date().getFullYear()} PlateShare. All rights reserved.
           </p>
-        </div>
-
-        {/* Quick Links */}
-        <div className="flex flex-col items-start">
-          <h2 className="font-semibold mb-6">Quick Links</h2>
-          <ul className="space-y-3 text-gray-400">
-            <li>
-              <a href="/" className="hover:text-white transition-colors">
-                Home
-              </a>
-            </li>
-            <li>
-              <a
-                href="/available-foods"
-                className="hover:text-white transition-colors"
-              >
-                Available Foods
-              </a>
-            </li>
-            <li>
-              <a
-                href="/add-food"
-                className="hover:text-white transition-colors"
-              >
-                Add Food
-              </a>
-            </li>
-            <li>
-              <a href="/" className="hover:text-white transition-colors">
-                My Profile
-              </a>
-            </li>
-          </ul>
-        </div>
-
-        {/* Help & Support */}
-        <div className="flex flex-col items-start">
-          <h2 className="font-semibold mb-6">Help & Support</h2>
-          <ul className="space-y-3 text-gray-400">
-            <li>
-              <a href="/" className="hover:text-white transition-colors">
-                FAQ
-              </a>
-            </li>
-            <li>
-              <a href="/" className="hover:text-white transition-colors">
-                Contact Us
-              </a>
-            </li>
-            <li>
-              <a href="/" className="hover:text-white transition-colors">
-                Terms of Service
-              </a>
-            </li>
-            <li>
-              <a href="/" className="hover:text-white transition-colors">
-                Privacy Policy
-              </a>
-            </li>
-          </ul>
-        </div>
-
-        {/* Newsletter / Social */}
-        <div className="flex flex-col items-start">
-          <h2 className="font-semibold mb-6">Stay Connected</h2>
-          <p className="text-gray-400 mb-2 text-sm">
-            Subscribe for updates & tips.
-          </p>
-          <div className="flex mb-8">
-            <input
-              type="email"
-              placeholder="Enter your email"
-              className="px-3 py-2 rounded-l-md border focus:outline-none"
-            />
-            <button className="bg-primary text-white px-4 py-2 rounded-r-md hover:bg-primary/80 transition-colors cursor-pointer">
-              <FaEnvelope />
-            </button>
-          </div>
-          <div className="flex space-x-4">
-            <a
-              href="https://facebook.com/ashikke2.0"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-blue-500 transition-colors"
-            >
-              <FaFacebookF />
-            </a>
-            <a
-              href="https://github.com/ashikurahman1"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-blue-400 transition-colors"
-            >
-              <FaGithub />
-            </a>
-            <a
-              href="#"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-pink-500 transition-colors"
-            >
-              <FaInstagram />
-            </a>
+          <div className="flex gap-6 text-sm text-base-content/60">
+            <Link to="/privacy" className="hover:text-primary transition-colors">Privacy</Link>
+            <Link to="/terms" className="hover:text-primary transition-colors">Terms</Link>
+            <Link to="/cookies" className="hover:text-primary transition-colors">Cookies</Link>
           </div>
         </div>
-      </div>
-
-      {/* Bottom */}
-      <div className="mt-10 border-t border-gray-700 pt-4 text-center text-gray-500 text-sm">
-        &copy; {new Date().getFullYear()} PlateShare. All rights reserved.
       </div>
     </footer>
   );

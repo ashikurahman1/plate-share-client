@@ -3,8 +3,13 @@ import axios from 'axios';
 import { useNavigate } from 'react-router';
 import useAuth from './useAuth';
 
+const isLocal = window.location.hostname === 'localhost';
+const API_URL = isLocal 
+  ? 'http://localhost:5100/api' 
+  : 'https://plate-share-serv1.vercel.app/api';
+
 const instance = axios.create({
-  baseURL: 'https://plate-share-serv1.vercel.app/api',
+  baseURL: API_URL,
 });
 
 const useAxiosSecure = () => {

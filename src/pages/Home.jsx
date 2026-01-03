@@ -1,19 +1,35 @@
 import React from 'react';
 import Hero from '../components/HomePage/Hero/Hero';
 import FeaturedFoods from '../components/HomePage/FeaturedFoods/FeaturedFoods';
-import HowItWorks from '../components/HomePage/HowItWorks/HowItWorks';
-import OurMission from '../components/HomePage/OurMission/OurMission';
+import HowItWorks from '../components/HomePage/Sections/HowItWorks';
+import Features from '../components/HomePage/Sections/Features';
+import Statistics from '../components/HomePage/Sections/Statistics';
+import Testimonials from '../components/HomePage/Sections/Testimonials';
+import FAQ from '../components/HomePage/Sections/FAQ';
+import Categories from '../components/HomePage/Sections/Categories';
+import AppHighlight from '../components/HomePage/Sections/AppHighlight';
+import BlogSafety from '../components/HomePage/Sections/BlogSafety';
+import Newsletter from '../components/HomePage/Sections/Newsletter';
+import Partners from '../components/HomePage/Sections/Partners';
 import { useLoaderData } from 'react-router';
 
 const Home = () => {
   const featuredFoods = useLoaderData();
 
   return (
-    <div>
+    <div className="overflow-x-hidden">
       <Hero />
-      <FeaturedFoods featuredFoods={featuredFoods} />
+      <Partners />
+      <Statistics />
       <HowItWorks />
-      <OurMission />
+      <Features />
+      <FeaturedFoods featuredFoods={featuredFoods} />
+      <Categories />
+      <AppHighlight />
+      <Testimonials />
+      <BlogSafety />
+      <FAQ />
+      <Newsletter />
     </div>
   );
 };

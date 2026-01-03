@@ -1,38 +1,48 @@
 @import 'tailwindcss';
 @plugin "daisyui";
+
 @plugin "daisyui/theme" {
   name: 'light';
   default: true;
-  --color-primary: #fea51c;
-  /* --color-secondary: teal; */
+  --color-primary: #10b981; /* Emerald 500 */
+  --color-secondary: #f59e0b; /* Amber 500 */
+  --color-accent: #6366f1; /* Indigo 500 */
+  --color-neutral: #1f2937; /* Slate 800 */
+  --color-base-100: #ffffff;
+}
+
+@plugin "daisyui/theme" {
+  name: 'dark';
+  --color-primary: #10b981;
+  --color-secondary: #f59e0b;
+  --color-accent: #818cf8;
+  --color-neutral: #f9fafb;
+  --color-base-100: #0f172a; /* Slate 900 */
+}
+
+@layer base {
+  :root {
+    --primary: #10b981;
+    --secondary: #f59e0b;
+  }
+
+  body {
+    @apply transition-colors duration-300;
+  }
 }
 
 nav .isActive a {
-  font-weight: 600;
-  transition: 0.3s ease-in;
+  @apply font-semibold transition-all duration-300;
 }
+
 nav .isActive a:hover {
-  color: #fea51c;
+  @apply text-primary scale-105;
 }
+
 nav .isActive a.active {
-  color: #fea51c;
+  @apply text-primary border-b-2 border-primary pb-1;
 }
 
-option:focus,
-select:focus,
-input:focus,
-textarea:focus {
-  outline: 0px solid #fea51c;
-  border: 1px solid #fea51c;
-}
-
-.swal2-confirm {
-  background-color: #fea51c !important;
-  color: white !important;
-  border: none !important;
-  box-shadow: none !important;
-}
-
-.swal2-confirm:hover {
-  background-color: #e59417 !important;
-}
+/* .swal2-confirm {
+  @apply !bg-primary !text-white !border-none !shadow-none !px-6 !py-2 !rounded-lg hover:!bg-opacity-90 transition-all;
+} */
